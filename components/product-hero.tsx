@@ -5,6 +5,7 @@ import Image from "next/image"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { User, Calendar, Users, Apple } from "lucide-react"
 
 const features = [
   {
@@ -80,71 +81,128 @@ export function ProductHero() {
           </div>
         </div>
 
-        {/* Evaluator Info Section (Moved here) */}
-        <div className="bg-card border-2 border-primary/20 rounded-3xl p-8 shadow-md">
-          <h3 className="text-xl font-bold text-foreground mb-4 pb-2 border-b border-primary/30">
-            I. Información del Evaluador
-          </h3>
-          <p className="text-sm text-muted-foreground mb-8">
-            Antes de comenzar con la evaluación, por favor complete sus datos básicos. 
-            Esta información es confidencial y se utilizará solo para fines estadísticos.
-          </p>
+        {/* Evaluator Info Section — Rediseñado */}
+        <div className="relative bg-gradient-to-br from-card via-card to-primary/5 border border-primary/20 rounded-3xl p-8 md:p-10 shadow-xl overflow-hidden">
+          {/* Decorative blob */}
+          <div className="pointer-events-none absolute -top-16 -right-16 w-56 h-56 bg-primary/10 rounded-full blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-20 -left-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="space-y-3">
-              <Label htmlFor="edad" className="text-base font-semibold">Edad</Label>
-              <Input
-                id="edad"
-                type="number"
-                value={evaluatorData.edad}
-                onChange={(e) => setEvaluatorData({ ...evaluatorData, edad: e.target.value })}
-                placeholder="Ej: 25"
-                className="bg-background border-primary/20 focus:ring-primary/30"
-              />
+          <div className="relative">
+            {/* Header */}
+            <div className="flex items-start gap-4 mb-8">
+              <div className="flex-none w-12 h-12 rounded-2xl bg-primary/15 text-primary flex items-center justify-center shadow-sm">
+                <User className="w-6 h-6" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs font-semibold uppercase tracking-widest text-primary/80">Paso 1</span>
+                  <span className="h-px flex-1 bg-gradient-to-r from-primary/30 to-transparent" />
+                </div>
+                <h3 className="text-2xl font-bold text-foreground leading-tight">
+                  Información del Evaluador
+                </h3>
+                <p className="text-sm text-muted-foreground mt-2 max-w-xl">
+                  Antes de comenzar con la evaluación, complete sus datos básicos.
+                  Esta información es confidencial y se utilizará solo con fines estadísticos.
+                </p>
+              </div>
             </div>
 
-            <div className="space-y-4">
-              <Label className="text-base font-semibold">Género</Label>
-              <RadioGroup
-                value={evaluatorData.genero}
-                onValueChange={(value) => setEvaluatorData({ ...evaluatorData, genero: value })}
-                className="flex gap-4"
-              >
-                <div className="flex items-center space-x-2 bg-muted/30 p-2 rounded-md hover:bg-muted/50 transition-colors cursor-pointer">
-                  <RadioGroupItem value="M" id="hero-genero-m" />
-                  <Label htmlFor="hero-genero-m" className="cursor-pointer">M</Label>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Edad */}
+              <div className="group relative bg-background/70 backdrop-blur-sm border border-primary/15 rounded-2xl p-5 hover:border-primary/40 hover:shadow-md transition-all">
+                <div className="flex items-center gap-2 mb-3">
+                  <Calendar className="w-4 h-4 text-primary" />
+                  <Label htmlFor="edad" className="text-sm font-semibold tracking-wide uppercase text-foreground/80">
+                    Edad
+                  </Label>
                 </div>
-                <div className="flex items-center space-x-2 bg-muted/30 p-2 rounded-md hover:bg-muted/50 transition-colors cursor-pointer">
-                  <RadioGroupItem value="F" id="hero-genero-f" />
-                  <Label htmlFor="hero-genero-f" className="cursor-pointer">F</Label>
-                </div>
-                <div className="flex items-center space-x-2 bg-muted/30 p-2 rounded-md hover:bg-muted/50 transition-colors cursor-pointer">
-                  <RadioGroupItem value="O" id="hero-genero-o" />
-                  <Label htmlFor="hero-genero-o" className="cursor-pointer">Otro</Label>
-                </div>
-              </RadioGroup>
-            </div>
+                <Input
+                  id="edad"
+                  type="number"
+                  value={evaluatorData.edad}
+                  onChange={(e) => setEvaluatorData({ ...evaluatorData, edad: e.target.value })}
+                  placeholder="Ej: 25"
+                  className="bg-transparent border-0 border-b border-primary/20 rounded-none px-0 text-2xl font-semibold focus-visible:ring-0 focus-visible:border-primary placeholder:text-muted-foreground/40 h-12"
+                />
+              </div>
 
-            <div className="space-y-4">
-              <Label className="text-base font-semibold">¿Consume habitualmente snacks saludables?</Label>
-              <RadioGroup
-                value={evaluatorData.consumeSnacks}
-                onValueChange={(value) => setEvaluatorData({ ...evaluatorData, consumeSnacks: value })}
-                className="flex gap-4"
-              >
-                <div className="flex items-center space-x-2 bg-muted/30 p-2 rounded-md hover:bg-muted/50 transition-colors cursor-pointer">
-                  <RadioGroupItem value="si" id="hero-snacks-si" />
-                  <Label htmlFor="hero-snacks-si" className="cursor-pointer">Sí</Label>
+              {/* Género */}
+              <div className="group relative bg-background/70 backdrop-blur-sm border border-primary/15 rounded-2xl p-5 hover:border-primary/40 hover:shadow-md transition-all">
+                <div className="flex items-center gap-2 mb-3">
+                  <Users className="w-4 h-4 text-primary" />
+                  <Label className="text-sm font-semibold tracking-wide uppercase text-foreground/80">
+                    Género
+                  </Label>
                 </div>
-                <div className="flex items-center space-x-2 bg-muted/30 p-2 rounded-md hover:bg-muted/50 transition-colors cursor-pointer">
-                  <RadioGroupItem value="no" id="hero-snacks-no" />
-                  <Label htmlFor="hero-snacks-no" className="cursor-pointer">No</Label>
+                <RadioGroup
+                  value={evaluatorData.genero}
+                  onValueChange={(value) => setEvaluatorData({ ...evaluatorData, genero: value })}
+                  className="grid grid-cols-3 gap-2"
+                >
+                  {[
+                    { v: "M", l: "M" },
+                    { v: "F", l: "F" },
+                    { v: "O", l: "Otro" },
+                  ].map(({ v, l }) => {
+                    const active = evaluatorData.genero === v
+                    return (
+                      <Label
+                        key={v}
+                        htmlFor={`hero-genero-${v.toLowerCase()}`}
+                        className={`flex items-center justify-center h-11 rounded-xl border cursor-pointer text-sm font-medium transition-all ${
+                          active
+                            ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                            : "bg-background border-primary/15 hover:border-primary/40 hover:bg-primary/5 text-foreground"
+                        }`}
+                      >
+                        <RadioGroupItem value={v} id={`hero-genero-${v.toLowerCase()}`} className="sr-only" />
+                        {l}
+                      </Label>
+                    )
+                  })}
+                </RadioGroup>
+              </div>
+
+              {/* Snacks saludables */}
+              <div className="group relative bg-background/70 backdrop-blur-sm border border-primary/15 rounded-2xl p-5 hover:border-primary/40 hover:shadow-md transition-all">
+                <div className="flex items-center gap-2 mb-3">
+                  <Apple className="w-4 h-4 text-primary" />
+                  <Label className="text-sm font-semibold tracking-wide uppercase text-foreground/80 leading-tight">
+                    ¿Consume snacks saludables?
+                  </Label>
                 </div>
-              </RadioGroup>
+                <RadioGroup
+                  value={evaluatorData.consumeSnacks}
+                  onValueChange={(value) => setEvaluatorData({ ...evaluatorData, consumeSnacks: value })}
+                  className="grid grid-cols-2 gap-2"
+                >
+                  {[
+                    { v: "si", l: "Sí" },
+                    { v: "no", l: "No" },
+                  ].map(({ v, l }) => {
+                    const active = evaluatorData.consumeSnacks === v
+                    return (
+                      <Label
+                        key={v}
+                        htmlFor={`hero-snacks-${v}`}
+                        className={`flex items-center justify-center h-11 rounded-xl border cursor-pointer text-sm font-medium transition-all ${
+                          active
+                            ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                            : "bg-background border-primary/15 hover:border-primary/40 hover:bg-primary/5 text-foreground"
+                        }`}
+                      >
+                        <RadioGroupItem value={v} id={`hero-snacks-${v}`} className="sr-only" />
+                        {l}
+                      </Label>
+                    )
+                  })}
+                </RadioGroup>
+              </div>
             </div>
           </div>
         </div>
-
+        /* */
         <div className="mt-16 text-center">
           <div className="inline-block bg-primary text-primary-foreground px-8 py-3 rounded-full">
             <p className="text-lg font-medium">¡Una opción diferente!</p>
