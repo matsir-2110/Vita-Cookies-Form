@@ -202,7 +202,6 @@ export function ProductHero() {
             </div>
           </div>
         </div>
-        /* */
         <div className="mt-16 text-center">
           <div className="inline-block bg-primary text-primary-foreground px-8 py-3 rounded-full">
             <p className="text-lg font-medium">¡Una opción diferente!</p>
