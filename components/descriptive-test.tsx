@@ -71,29 +71,7 @@ export function DescriptiveTest() {
       </CardHeader>
 
       <CardContent className="p-6">
-        <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Información del Juez */}
-          <div className="flex flex-wrap gap-4 items-end">
-            <div className="space-y-2">
-              <Label htmlFor="juez-numero">Nro. de Juez</Label>
-              <Input
-                id="juez-numero"
-                type="number"
-                value={formData.juezNumero}
-                onChange={(e) => setFormData({ ...formData, juezNumero: e.target.value })}
-                placeholder="Ej: 1"
-                className="bg-card w-24"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Fecha</Label>
-              <Input
-                type="date"
-                className="bg-card"
-                defaultValue={new Date().toISOString().split("T")[0]}
-              />
-            </div>
-          </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
 
           {/* Instrucciones */}
           <section className="bg-muted/50 p-4 rounded-lg">
