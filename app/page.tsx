@@ -27,7 +27,7 @@ export default function Home() {
             Evaluación Sensorial - Galletitas Vegetales Sustentables
           </h1>
           <p className="text-sm text-center opacity-90 mt-1">
-            Facultad de Ciencias de la Salud y Bienestar
+            Universidad de la Cuenca del Plata
           </p>
         </div>
       </header>
