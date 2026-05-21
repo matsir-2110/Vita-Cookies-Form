@@ -5,7 +5,7 @@ import { ProductHero } from "@/components/product-hero"
 import { AcceptanceTest } from "@/components/acceptance-test"
 import { DescriptiveTest } from "@/components/descriptive-test"
 import { Button } from "@/components/ui/button"
-import { ClipboardList, FileText, Cookie } from "lucide-react"
+import { ClipboardList, FileText, Cookie, LogIn } from "lucide-react"
 
 type TabType = "info" | "acceptance" | "descriptive"
 
@@ -21,14 +21,24 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       {/* Header */}
-      <header className="bg-primary text-primary-foreground py-4 px-4 shadow-md">
+      <header className="bg-primary text-primary-foreground py-4 px-4 shadow-md relative">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-lg md:text-xl font-semibold text-center">
+          <h1 className="text-lg md:text-xl font-semibold text-center pr-10 md:pr-0">
             Evaluación Sensorial - Galletitas Vegetales Sustentables
           </h1>
-          <p className="text-sm text-center opacity-90 mt-1">
+          <p className="text-sm text-center opacity-90 mt-1 pr-10 md:pr-0">
             Universidad de la Cuenca del Plata
           </p>
+        </div>
+        <div className="absolute right-4 top-1/2 -translate-y-1/2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="bg-transparent border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground flex items-center gap-2 transition-colors"
+          >
+            <LogIn className="w-4 h-4" />
+            <span className="hidden md:inline">Login Admin</span>
+          </Button>
         </div>
       </header>
 
