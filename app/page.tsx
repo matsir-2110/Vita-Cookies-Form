@@ -35,7 +35,7 @@ export default function Home() {
       {/* Navigation Tabs */}
       <nav className="bg-card border-b border-border sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="flex gap-1 overflow-x-auto py-2">
+          <div className="flex gap-1 overflow-x-auto py-2 justify-center">
             {tabs.map((tab) => {
               const Icon = tab.icon
               return (
@@ -58,10 +58,24 @@ export default function Home() {
       </nav>
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {activeTab === "info" && <ProductHero />}
-        {activeTab === "acceptance" && <AcceptanceTest />}
-        {activeTab === "descriptive" && <DescriptiveTest />}
+      <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col items-center">
+        <div className="w-full max-w-4xl">
+          {activeTab === "info" && (
+            <div className="flex justify-center">
+              <ProductHero />
+            </div>
+          )}
+          {activeTab === "acceptance" && (
+            <div className="max-w-3xl mx-auto">
+              <AcceptanceTest />
+            </div>
+          )}
+          {activeTab === "descriptive" && (
+            <div className="max-w-3xl mx-auto">
+              <DescriptiveTest />
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Footer */}
