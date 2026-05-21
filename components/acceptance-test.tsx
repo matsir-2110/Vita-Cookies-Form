@@ -136,7 +136,7 @@ export function AcceptanceTest() {
           {/* Sección III: Escala Hedónica */}
           <section>
             <h3 className="text-lg font-semibold text-foreground mb-4 pb-2 border-b border-primary/30">
-              III. Escala Hedónica de Aceptación
+              I. Escala Hedónica de Aceptación
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
               Seleccione solo una option basada en su percepción sensorial inmediata.
@@ -169,7 +169,7 @@ export function AcceptanceTest() {
           {/* Sección IV: Observaciones */}
           <section>
             <h3 className="text-lg font-semibold text-foreground mb-4 pb-2 border-b border-primary/30">
-              IV. Observaciones y Sugerencias
+              II. Observaciones y Sugerencias
             </h3>
 
             <div className="space-y-4">
