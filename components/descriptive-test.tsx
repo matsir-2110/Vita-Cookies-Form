@@ -59,22 +59,42 @@ export function DescriptiveTest() {
   }
 
   return (
-    <Card className="border-2 border-primary/20 shadow-lg">
-      <CardHeader className="bg-primary/10 rounded-t-lg">
-        <CardTitle className="text-xl md:text-2xl text-center text-foreground">
-          PRUEBA DESCRIPTIVA
-        </CardTitle>
-        <p className="text-sm text-center text-muted-foreground">Perfil de Atributos Técnicos</p>
-        <p className="text-sm text-center text-muted-foreground">
-          Desarrollo de Galletitas Vegetales Sustentables
-        </p>
+    <Card
+      className="border-0 shadow-xl overflow-hidden"
+      style={{ backgroundColor: "#fbfaf6" }}
+    >
+      <CardHeader
+        className="relative p-0 overflow-hidden"
+        style={{ backgroundColor: "#fbfaf6" }}
+      >
+        <div className="relative z-10 px-8 md:px-12 pt-10 md:pt-12 pb-2 md:pb-2">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 md:gap-12">
+            {/* Izquierda: eyebrow + título */}
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-4">
+                <span
+                  className="text-[11px] uppercase tracking-[0.3em] font-medium"
+                  style={{ color: "#2f3d2a" }}
+                >
+                  Sección · Perfil de Atributos
+                </span>
+              </div>
+              <CardTitle
+                className="text-4xl md:text-5xl leading-[1.05] tracking-tight font-semibold"
+                style={{ color: "#1f2a3d" }}
+              >
+                Prueba Descriptiva
+              </CardTitle>
+            </div>
+          </div>
+        </div>
       </CardHeader>
 
-      <CardContent className="p-6">
+      <CardContent className="p-6 pt-0">
         <form onSubmit={handleSubmit} className="space-y-6">
 
           {/* Instrucciones */}
-          <section className="bg-muted/50 p-4 rounded-lg">
+          <section className="bg-muted/50 p-4 rounded-lg mt-4">
             <h3 className="text-base font-semibold text-foreground mb-2">
               Instrucciones para el evaluador
             </h3>
