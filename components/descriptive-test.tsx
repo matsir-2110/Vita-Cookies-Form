@@ -10,28 +10,28 @@ import { Textarea } from "@/components/ui/textarea"
 const attributes = [
   {
     id: "color",
-    title: "1. Intensidad Cromática (Color)",
+    title: "I. Intensidad Cromática (Color)",
     description:
       "Se evalúa el grado de oscurecimiento. El color café es producto de la formación de melanoidinas durante la reacción entre los azúcares reductores de la fruta y los grupos amino de las proteínas.",
     scale: ["Pálido", "", "Dorado medio", "", "Marrón intenso"],
   },
   {
     id: "aroma",
-    title: "2. Perfil Aromático (Olor)",
+    title: "II. Perfil Aromático (Olor)",
     description:
       "Valoración de la liberación de compuestos volátiles potenciados por el tratamiento térmico. Incluye notas de vainillina, aldehídos de la canela, aromas de la legumbre (lentejas).",
     scale: ["Muy débil", "", "Moderado", "", "Muy intenso"],
   },
   {
     id: "sabor",
-    title: "3. Sinergia de Sabores (Sabor)",
+    title: "III. Sinergia de Sabores (Sabor)",
     description:
       "Evaluación del equilibrio entre el dulzor aportado por las hexosas de la manzana (fructosa y glucosa) y las notas características de las proteínas de la legumbre.",
     scale: ["Desequilibrado", "", "Equilibrado", "", "Muy agradable"],
   },
   {
     id: "textura",
-    title: "4. Propiedades Reológicas (Textura)",
+    title: "IV. Propiedades Reológicas (Textura)",
     description:
       "Nivel de crujencia y firmeza. Este atributo depende de la gelatinización del almidón durante el horneado y su posterior retrogradación (reordenamiento de amilosa) tras el enfriamiento.",
     scale: ["Muy blanda", "", "Firme", "", "Muy crujiente"],
