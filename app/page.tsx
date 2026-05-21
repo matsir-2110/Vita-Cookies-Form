@@ -92,10 +92,10 @@ export default function Home() {
       <footer className="bg-primary/10 border-t border-border py-6 mt-8">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <p className="text-sm text-muted-foreground">
-            Proyecto de Desarrollo de Galletitas Vegetales Sustentables
+            Evaluación Sensorial de Galletitas de Avena, Lentejas, Vegetales y Chocolate
           </p>
           <p className="text-xs text-muted-foreground mt-1">
-            Avena, Lentejas, Vegetales y Chocolate
+             Univ. de la Cuenca del Plata · Lic. en Nutrición - ISI
           </p>
         </div>
       </footer>
