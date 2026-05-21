@@ -67,7 +67,7 @@ export function DescriptiveTest() {
         className="relative p-0 overflow-hidden"
         style={{ backgroundColor: "#fbfaf6" }}
       >
-        <div className="relative z-10 px-8 md:px-12 pt-10 md:pt-12 pb-2 md:pb-2">
+        <div className="relative px-8 md:px-12 pt-10 md:pt-12 pb-2 md:pb-2">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 md:gap-12">
             {/* Izquierda: eyebrow + título */}
             <div className="flex-1">
