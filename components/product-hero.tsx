@@ -47,7 +47,7 @@ export function ProductHero() {
         </div>
 
         {/* Info & Image Section */}
-        <div className="flex flex-col md:flex-row gap-12 items-start justify-center mb-16">
+        <div className="flex flex-col md:flex-row gap-12 items-center justify-center mb-16">
           <div className="w-full md:w-[400px] md:flex-none space-y-8 bg-muted/50 p-8 rounded-lg h-fit border border-primary/10">
             <h2 className="text-2xl md:text-4xl font-bold text-foreground text-center mb-6 pb-3 border-b-2 border-primary/20 whitespace-nowrap">
               ¿En qué consiste?

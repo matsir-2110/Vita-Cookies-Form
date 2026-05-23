@@ -5,7 +5,7 @@ import { ProductHero } from "@/components/product-hero"
 import { AcceptanceTest } from "@/components/acceptance-test"
 import { DescriptiveTest } from "@/components/descriptive-test"
 import { Button } from "@/components/ui/button"
-import { ClipboardList, FileText, Cookie } from "lucide-react"
+import { ClipboardList, FileText, Cookie, LogIn } from "lucide-react"
 
 type TabType = "info" | "acceptance" | "descriptive"
 
@@ -21,21 +21,31 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       {/* Header */}
-      <header className="bg-primary text-primary-foreground py-4 px-4 shadow-md">
+      <header className="bg-primary text-primary-foreground py-4 px-4 shadow-md relative">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-lg md:text-xl font-semibold text-center">
+          <h1 className="text-lg md:text-xl font-semibold text-center pr-10 md:pr-0">
             Evaluación Sensorial - Galletitas Vegetales Sustentables
           </h1>
-          <p className="text-sm text-center opacity-90 mt-1">
+          <p className="text-sm text-center opacity-90 mt-1 pr-10 md:pr-0">
             Universidad de la Cuenca del Plata
           </p>
+        </div>
+        <div className="absolute right-4 top-1/2 -translate-y-1/2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="bg-transparent border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground flex items-center gap-2 transition-colors"
+          >
+            <LogIn className="w-4 h-4" />
+            <span className="hidden md:inline">Login Admin</span>
+          </Button>
         </div>
       </header>
 
       {/* Navigation Tabs */}
       <nav className="bg-card border-b border-border sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="flex gap-1 overflow-x-auto py-2">
+          <div className="flex gap-1 overflow-x-auto py-2 justify-center">
             {tabs.map((tab) => {
               const Icon = tab.icon
               return (
@@ -58,20 +68,34 @@ export default function Home() {
       </nav>
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {activeTab === "info" && <ProductHero />}
-        {activeTab === "acceptance" && <AcceptanceTest />}
-        {activeTab === "descriptive" && <DescriptiveTest />}
+      <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col items-center">
+        <div className="w-full max-w-4xl">
+          {activeTab === "info" && (
+            <div className="flex justify-center">
+              <ProductHero />
+            </div>
+          )}
+          {activeTab === "acceptance" && (
+            <div className="max-w-3xl mx-auto">
+              <AcceptanceTest />
+            </div>
+          )}
+          {activeTab === "descriptive" && (
+            <div className="max-w-3xl mx-auto">
+              <DescriptiveTest />
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Footer */}
       <footer className="bg-primary/10 border-t border-border py-6 mt-8">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <p className="text-sm text-muted-foreground">
-            Proyecto de Desarrollo de Galletitas Vegetales Sustentables
+            Evaluación Sensorial de Galletitas de Avena, Lentejas, Vegetales y Chocolate
           </p>
           <p className="text-xs text-muted-foreground mt-1">
-            Avena, Lentejas, Vegetales y Chocolate
+             Univ. de la Cuenca del Plata · Lic. en Nutrición - ISI
           </p>
         </div>
       </footer>
