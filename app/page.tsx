@@ -36,8 +36,7 @@ export default function Home() {
           <Button 
             variant="outline" 
             size="sm" 
-            onClick={() => router.push("/admin")}
-            className="bg-transparent border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground flex items-center gap-2 transition-colors"
+            onClick={() => router.push("/login")}            className="bg-transparent border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground flex items-center gap-2 transition-colors"
           >
             <LogIn className="w-4 h-4" />
             <span className="hidden md:inline">Login Admin</span>
