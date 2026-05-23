@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -13,7 +13,7 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
 
-    if (!email || !password) {
+    if (!username || !password) {
       setError("Por favor completá todos los campos.");
       return;
     }
@@ -24,11 +24,11 @@ export default function LoginPage() {
     await new Promise((r) => setTimeout(r, 1000));
 
     // Ejemplo: credenciales hardcodeadas para prueba
-    if (email === "admin@vitacookies.com" && password === "admin123") {
+    if (username === "admin" && password === "admin123") {
       // Redirigir al panel
       window.location.href = "/admin";
     } else {
-      setError("Credenciales incorrectas. Verificá tu email y contraseña.");
+      setError("Credenciales incorrectas. Verificá tu usuario y contraseña.");
       setLoading(false);
     }
   };
@@ -83,21 +83,21 @@ export default function LoginPage() {
 
         {/* Formulario */}
         <div className="space-y-5">
-          {/* Email */}
+          {/* Usuario */}
           <div>
             <label
-              htmlFor="email"
+              htmlFor="username"
               className="block text-sm font-medium mb-2"
               style={{ color: "#374151" }}
             >
-              Email
+              Usuario
             </label>
             <input
-              id="email"
-              type="email"
-              placeholder="admin@vitacookies.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="username"
+              type="text"
+              placeholder="Nombre de usuario"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="w-full rounded-full px-5 py-3 text-sm outline-none transition-all"
               style={{
                 backgroundColor: "#f9f7f4",
@@ -197,4 +197,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
