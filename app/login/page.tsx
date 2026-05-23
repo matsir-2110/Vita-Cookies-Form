@@ -177,11 +177,6 @@ export default function LoginPage() {
           >
             {loading ? "Ingresando..." : "Ingresar"}
           </button>
-
-          {/* Nota */}
-          <p className="text-center text-xs" style={{ color: "#9ca3af" }}>
-            ¿No tenés cuenta? El administrador registra los accesos manualmente.
-          </p>
         </div>
       </div>
 
