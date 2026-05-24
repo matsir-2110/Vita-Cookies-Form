@@ -40,7 +40,6 @@ export default function LoginPage() {
     >
       {/* Logo */}
       <div className="mb-8 flex items-center gap-2">
-        <span className="text-2xl">🍪</span>
         <span
           className="text-2xl font-bold tracking-tight"
           style={{ color: "#3a5a34", fontFamily: "Georgia, serif" }}
