@@ -132,19 +132,42 @@ export function DescriptiveTest() {
       </CardHeader>
 
       <CardContent className="p-6 pt-0">
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-8">
 
-          {/* Instrucciones */}
-          <section className="bg-muted/50 p-4 rounded-lg mt-4">
-            <h3 className="text-base font-semibold text-foreground mb-2">
-              Instrucciones para el evaluador
+          {/* Instrucciones para el evaluador */}
+          <section className="pt-0 pb-8 md:pb-10">
+            <h3
+              className="flex items-center justify-center gap-6 text-lg font-semibold mb-10 before:content-[''] before:flex-1 before:h-[1px] before:bg-gradient-to-r before:from-transparent before:to-[#1f2a3d] after:content-[''] after:flex-1 after:h-[1px] after:bg-gradient-to-l after:from-transparent after:to-[#1f2a3d]"
+              style={{ color: "#1f2a3d" }}
+            >
+              Instrucciones
             </h3>
-            <p className="text-sm text-muted-foreground">
-              A continuación, se le solicita evaluar la intensidad de cuatro atributos específicos. Por
-              favor, marque el valor en la escala que mejor describa su percepción, considerando que el
-              extremo izquierdo (1) representa la intensidad más baja y el extremo derecho (5) la más
-              alta.
-            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 md:divide-x divide-gray-200">
+              {[
+                { n: 1, key: "Observar", text: "Analice cada atributo sensorial de la muestra con atención y sin apuro." },
+                { n: 2, key: "Percibir", text: "Identifique la intensidad percibida de color, aroma, sabor y textura." },
+                { n: 3, key: "Calificar", text: "Marque en la escala de 1 a 5 el valor que mejor represente su percepción." },
+              ].map((s) => (
+                <div key={s.n} className="flex flex-col items-center text-center px-4 md:px-8">
+                  <span
+                    className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold mb-4"
+                    style={{ backgroundColor: "#dce5d4", color: "#1f2a3d" }}
+                  >
+                    {s.n}
+                  </span>
+                  <h4
+                    className="text-base font-semibold mb-3"
+                    style={{ color: "#1f2a3d" }}
+                  >
+                    {s.key}
+                  </h4>
+                  <p className="text-sm leading-relaxed" style={{ color: "#5a6b7d" }}>
+                    {s.text}
+                  </p>
+                </div>
+              ))}
+            </div>
           </section>
 
           {/* Atributos */}
@@ -206,7 +229,7 @@ export function DescriptiveTest() {
               onChange={(e) => setFormData({ ...formData, comentarios: e.target.value })}
               placeholder="Escriba sus comentarios técnicos..."
               className="bg-card min-h-[100px]"
-            />
+            />  
           </section>
 
           <Button type="submit" className="w-full py-6 text-lg font-semibold" disabled={isSubmitting}>

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { ProductHero } from "@/components/product-hero"
 import { AcceptanceTest } from "@/components/acceptance-test"
 import { DescriptiveTest } from "@/components/descriptive-test"
@@ -11,6 +12,7 @@ type TabType = "info" | "acceptance" | "descriptive"
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<TabType>("info")
+  const router = useRouter()
 
   const tabs = [
     { id: "info" as const, label: "Información", icon: Cookie },
@@ -34,7 +36,7 @@ export default function Home() {
           <Button 
             variant="outline" 
             size="sm" 
-            className="bg-transparent border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground flex items-center gap-2 transition-colors"
+            onClick={() => router.push("/login")}            className="bg-transparent border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground flex items-center gap-2 transition-colors"
           >
             <LogIn className="w-4 h-4" />
             <span className="hidden md:inline">Login Admin</span>
