@@ -48,6 +48,12 @@ export function ProductHero({ onComplete }: ProductHeroProps) {
       return
     }
 
+    const edadNum = Number(evaluatorData.edad)
+    if (!Number.isInteger(edadNum) || edadNum <= 0) {
+      alert("Por favor, ingrese una edad válida (número entero mayor a 0).")
+      return
+    }
+
     setIsSubmitting(true)
 
     try {
@@ -166,10 +172,12 @@ export function ProductHero({ onComplete }: ProductHeroProps) {
                 <Input
                   id="edad"
                   type="number"
+                  min="1"
+                  step="1"
                   value={evaluatorData.edad}
                   onChange={(e) => setEvaluatorData({ ...evaluatorData, edad: e.target.value })}
                   placeholder="Ej: 25"
-                  className={`bg-transparent border-0 border-b rounded-none px-0 text-2xl font-semibold focus-visible:ring-0 placeholder:text-muted-foreground/40 h-12 ${hasAttemptedSubmit && !evaluatorData.edad ? "border-red-500 focus-visible:border-red-500" : "border-primary/20 focus-visible:border-primary"}`}
+                  className={`bg-transparent border-0 border-b rounded-none px-0 text-2xl font-semibold focus-visible:ring-0 placeholder:text-muted-foreground/40 h-12 ${hasAttemptedSubmit && (!evaluatorData.edad || Number(evaluatorData.edad) <= 0 || !Number.isInteger(Number(evaluatorData.edad))) ? "border-red-500 focus-visible:border-red-500" : "border-primary/20 focus-visible:border-primary"}`}
                 />
               </div>
 
