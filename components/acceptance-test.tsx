@@ -46,6 +46,7 @@ const steps = [
 
 export function AcceptanceTest({ evaluatorId }: { evaluatorId: string }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false)
   const [formData, setFormData] = useState({
     satisfaccion: "",
     consumoDiario: "",
@@ -55,10 +56,11 @@ export function AcceptanceTest({ evaluatorId }: { evaluatorId: string }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setHasAttemptedSubmit(true)
     
     // Basic validation
-    if (!formData.satisfaccion) {
-      alert("Por favor, seleccione un nivel de satisfacción.")
+    if (!formData.satisfaccion || !formData.consumoDiario.trim() || !formData.preferenciaUltraprocesado.trim()) {
+      alert("Por favor, complete todos los campos obligatorios (marcados en rojo).")
       return
     }
 
@@ -212,29 +214,35 @@ export function AcceptanceTest({ evaluatorId }: { evaluatorId: string }) {
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="consumo-diario">¿Diariamente consumiría el producto?</Label>
+                <Label htmlFor="consumo-diario" className={hasAttemptedSubmit && !formData.consumoDiario.trim() ? "text-red-500" : ""}>
+                  ¿Diariamente consumiría el producto? *
+                </Label>
                 <Textarea
                   id="consumo-diario"
                   value={formData.consumoDiario}
                   onChange={(e) => setFormData({ ...formData, consumoDiario: e.target.value })}
                   placeholder="Escriba su respuesta..."
-                  className="bg-card min-h-[60px]"
+                  className={`bg-card min-h-[60px] ${hasAttemptedSubmit && !formData.consumoDiario.trim() ? "border-red-500 ring-1 ring-red-500" : ""}`}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="preferencia">¿Elegiría consumir este producto antes de un ultra procesado?</Label>
+                <Label htmlFor="preferencia" className={hasAttemptedSubmit && !formData.preferenciaUltraprocesado.trim() ? "text-red-500" : ""}>
+                  ¿Elegiría consumir este producto antes de un ultra procesado? *
+                </Label>
                 <Textarea
                   id="preferencia"
                   value={formData.preferenciaUltraprocesado}
                   onChange={(e) => setFormData({ ...formData, preferenciaUltraprocesado: e.target.value })}
                   placeholder="Escriba su respuesta..."
-                  className="bg-card min-h-[60px]"
+                  className={`bg-card min-h-[60px] ${hasAttemptedSubmit && !formData.preferenciaUltraprocesado.trim() ? "border-red-500 ring-1 ring-red-500" : ""}`}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="sugerencias">Sugerencias</Label>
+                <Label htmlFor="sugerencias">
+                  Sugerencias (Opcional)
+                </Label>
                 <Textarea
                   id="sugerencias"
                   value={formData.sugerencias}
