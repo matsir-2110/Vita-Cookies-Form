@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 
+import { supabase } from "@/lib/supabase"
+
 const attributes = [
   {
     id: "color",
@@ -39,6 +41,7 @@ const attributes = [
 ]
 
 export function DescriptiveTest() {
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
     juezNumero: "",
     color: "",
@@ -52,10 +55,48 @@ export function DescriptiveTest() {
     setFormData((prev) => ({ ...prev, [attributeId]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Datos de Prueba Descriptiva:", formData)
-    alert("¡Gracias por completar la prueba descriptiva!")
+    
+    // Basic validation
+    if (!formData.color || !formData.aroma || !formData.sabor || !formData.textura) {
+      alert("Por favor, califique todos los atributos antes de enviar.")
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      const { error } = await supabase
+        .from('descriptive_tests')
+        .insert([
+          {
+            juez_numero: formData.juezNumero || null,
+            color: parseInt(formData.color),
+            aroma: parseInt(formData.aroma),
+            sabor: parseInt(formData.sabor),
+            textura: parseInt(formData.textura),
+            comentarios: formData.comentarios || null,
+          }
+        ])
+
+      if (error) throw error
+
+      alert("¡Gracias por completar la prueba descriptiva!")
+      setFormData({
+        juezNumero: "",
+        color: "",
+        aroma: "",
+        sabor: "",
+        textura: "",
+        comentarios: "",
+      })
+    } catch (error) {
+      console.error("Error al guardar:", error)
+      alert("Hubo un error al guardar los datos. Por favor, intente de nuevo.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -168,8 +209,8 @@ export function DescriptiveTest() {
             />
           </section>
 
-          <Button type="submit" className="w-full py-6 text-lg font-semibold">
-            Enviar Prueba Descriptiva
+          <Button type="submit" className="w-full py-6 text-lg font-semibold" disabled={isSubmitting}>
+            {isSubmitting ? "Enviando..." : "Enviar Prueba Descriptiva"}
           </Button>
         </form>
       </CardContent>
