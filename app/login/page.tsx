@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -20,15 +21,24 @@ export default function LoginPage() {
 
     setLoading(true);
 
-    // TODO: reemplazá esta lógica con tu autenticación real
-    await new Promise((r) => setTimeout(r, 1000));
+    try {
+      const { data, error: supabaseError } = await supabase
+        .from('admin_cuenta')
+        .select('*')
+        .eq('usuario', username)
+        .eq('contraseña', password)
+        .single();
 
-    // Ejemplo: credenciales hardcodeadas para prueba
-    if (username === "admin" && password === "admin123") {
+      if (supabaseError || !data) {
+        setError("Credenciales incorrectas. Verificá tu usuario y contraseña.");
+        setLoading(false);
+        return;
+      }
+
       // Redirigir al panel
       window.location.href = "/admin";
-    } else {
-      setError("Credenciales incorrectas. Verificá tu usuario y contraseña.");
+    } catch (err) {
+      setError("Ocurrió un error al intentar iniciar sesión.");
       setLoading(false);
     }
   };
