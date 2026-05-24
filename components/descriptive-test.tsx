@@ -40,10 +40,9 @@ const attributes = [
   },
 ]
 
-export function DescriptiveTest() {
+export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
-    juezNumero: "",
     color: "",
     aroma: "",
     sabor: "",
@@ -71,7 +70,7 @@ export function DescriptiveTest() {
         .from('descriptive_tests')
         .insert([
           {
-            juez_numero: formData.juezNumero || null,
+            evaluator_id: evaluatorId,
             color: parseInt(formData.color),
             aroma: parseInt(formData.aroma),
             sabor: parseInt(formData.sabor),
@@ -91,9 +90,9 @@ export function DescriptiveTest() {
         textura: "",
         comentarios: "",
       })
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error al guardar:", error)
-      alert("Hubo un error al guardar los datos. Por favor, intente de nuevo.")
+      alert(`Hubo un error al guardar los datos: ${error?.message || "Error desconocido"}. Por favor, intente de nuevo.`)
     } finally {
       setIsSubmitting(false)
     }

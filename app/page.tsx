@@ -12,6 +12,7 @@ type TabType = "info" | "acceptance" | "descriptive"
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<TabType>("info")
+  const [evaluatorId, setEvaluatorId] = useState<string | null>(null)
   const router = useRouter()
 
   const tabs = [
@@ -19,6 +20,18 @@ export default function Home() {
     { id: "acceptance" as const, label: "Prueba de Aceptabilidad", icon: ClipboardList },
     { id: "descriptive" as const, label: "Prueba Descriptiva", icon: FileText },
   ]
+
+  const handleTabClick = (tabId: TabType) => {
+    if (tabId !== "info" && !evaluatorId) {
+      alert("Por favor, complete la Información del Evaluador antes de avanzar a las pruebas.")
+      return
+    }
+    if (tabId === "info" && evaluatorId) {
+      alert("La información ya fue guardada. Por favor, continúe con las pruebas.")
+      return
+    }
+    setActiveTab(tabId)
+  }
 
   return (
     <main className="min-h-screen">
@@ -36,7 +49,8 @@ export default function Home() {
           <Button 
             variant="outline" 
             size="sm" 
-            onClick={() => router.push("/login")}            className="bg-transparent border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground flex items-center gap-2 transition-colors"
+            onClick={() => router.push("/login")}            
+            className="bg-transparent border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground flex items-center gap-2 transition-colors"
           >
             <LogIn className="w-4 h-4" />
             <span className="hidden md:inline">Login Admin</span>
@@ -50,11 +64,14 @@ export default function Home() {
           <div className="flex gap-1 overflow-x-auto py-2 justify-center">
             {tabs.map((tab) => {
               const Icon = tab.icon
+              const isLocked = (tab.id === "info" && evaluatorId !== null) || (tab.id !== "info" && evaluatorId === null);
+              
               return (
                 <Button
                   key={tab.id}
                   variant={activeTab === tab.id ? "default" : "ghost"}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => handleTabClick(tab.id)}
+                  disabled={isLocked && activeTab !== tab.id}
                   className={`flex items-center gap-2 whitespace-nowrap ${
                     activeTab === tab.id ? "" : "text-muted-foreground"
                   }`}
@@ -74,17 +91,20 @@ export default function Home() {
         <div className="w-full max-w-4xl">
           {activeTab === "info" && (
             <div className="flex justify-center">
-              <ProductHero />
+              <ProductHero onComplete={(id) => {
+                setEvaluatorId(id);
+                setActiveTab("acceptance");
+              }} />
             </div>
           )}
           {activeTab === "acceptance" && (
             <div className="max-w-3xl mx-auto">
-              <AcceptanceTest />
+              <AcceptanceTest evaluatorId={evaluatorId!} />
             </div>
           )}
           {activeTab === "descriptive" && (
             <div className="max-w-3xl mx-auto">
-              <DescriptiveTest />
+              <DescriptiveTest evaluatorId={evaluatorId!} />
             </div>
           )}
         </div>
