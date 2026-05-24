@@ -5,30 +5,26 @@ import Image from "next/image"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { User, Calendar, Users, Apple, Sparkles, Activity, Heart, Leaf } from "lucide-react"
+import { User, Calendar, Users, Apple } from "lucide-react"
 
 import { supabase } from "@/lib/supabase"
 
 const features = [
   {
     title: "Desarrollo Innovador",
-    description: "Galletas vegetales diseñadas para integrar sinérgicamente manzana, zanahoria, avena y lentejas.",
-    icon: Sparkles
+    description: "Galletas vegetales diseñadas para integrar sinérgicamente manzana, zanahoria, avena y lentejas."
   },
   {
     title: "Complementación Proteica",
-    description: "Diseño técnico que busca elevar el valor biológico mediante la unión de legumbres y cereales.",
-    icon: Activity
+    description: "Diseño técnico que busca elevar el valor biológico mediante la unión de legumbres y cereales."
   },
   {
     title: "Aceptación Sensorial",
-    description: "Enriquecidas con chips de chocolate, canela y vainilla para un perfil altamente atractivo.",
-    icon: Heart
+    description: "Enriquecidas con chips de chocolate, canela y vainilla para un perfil altamente atractivo."
   },
   {
     title: "Snack Nutricional",
-    description: "Una alternativa de alta densidad nutricional frente a los productos industriales tradicionales.",
-    icon: Leaf
+    description: "Una alternativa de alta densidad nutricional frente a los productos industriales tradicionales."
   }
 ]
 
@@ -82,7 +78,7 @@ export function ProductHero({ onComplete }: ProductHeroProps) {
 
   return (
     <section className="relative overflow-hidden py-8 px-4 md:py-12 space-y-16">
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-6xl">
         {/* Header Section */}
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight mb-4" style={{ fontFamily: "serif" }}>
@@ -94,53 +90,38 @@ export function ProductHero({ onComplete }: ProductHeroProps) {
         </div>
 
         {/* Info & Image Section */}
-        <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-stretch justify-center mb-16">
-          
-          {/* Text Box */}
-          <div className="w-full md:w-[450px] md:flex-none relative bg-gradient-to-br from-card via-card to-primary/10 p-8 rounded-3xl border border-primary/20 shadow-xl overflow-hidden group/card">
-            {/* Background effects */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-16 -mt-16 transition-transform group-hover/card:scale-150 duration-700" />
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -ml-16 -mb-16 transition-transform group-hover/card:scale-150 duration-700" />
+        <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-stretch justify-center mb-16 w-full">
 
-            <div className="relative z-10 flex flex-col justify-center space-y-8 h-full">
-              <h2 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight mb-2">
-                ¿En qué consiste?
-                <div className="h-1 w-20 bg-primary mt-4 rounded-full" />
-              </h2>
-              
-              <div className="grid gap-4">
-                {features.map((feature, index) => {
-                  const Icon = feature.icon
-                  return (
-                    <div 
-                      key={index} 
-                      className="group flex gap-4 p-4 rounded-2xl hover:bg-primary/5 transition-all duration-300 border border-transparent hover:border-primary/10"
-                    >
-                      <div className="mt-1 flex-shrink-0 bg-primary/10 text-primary p-3 rounded-xl h-fit group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300 shadow-sm">
-                        <Icon className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-lg text-foreground leading-none mb-2 group-hover:text-primary transition-colors">
-                          {feature.title}
-                        </h3>
-                        <p className="text-muted-foreground text-sm leading-relaxed">
-                          {feature.description}
-                        </p>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
+          {/* Text Box */}
+          <div className="w-full md:flex-1 flex flex-col justify-center bg-muted/50 p-8 md:p-10 rounded-2xl border border-primary/10 shadow-sm">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground text-center mb-8 pb-6 border-b border-foreground/20">
+              ¿En qué consiste?
+            </h2>
+            <div className="grid gap-6">
+              {features.map((feature, index) => (
+                <div key={index} className="flex gap-4">
+                  <div className="mt-1 bg-primary/10 p-2 rounded-lg h-fit">
+                    <span className="w-2 h-2 bg-primary rounded-full block" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg text-foreground leading-none mb-1">{feature.title}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {feature.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Image Box */}
-          <div className="w-full md:w-[450px] md:flex-none relative min-h-[500px] md:min-h-0 flex items-center justify-center">
+          <div className="w-full md:flex-1 flex items-center justify-center">
             <Image
               src="/infografia.jpg"
               alt="Infografía de Galletitas de Lentejas, Manzana, Zanahoria y Chips"
-              fill
-              className="object-contain rounded-2xl drop-shadow-sm mix-blend-multiply"
+              width={600}
+              height={800}
+              className="w-full h-auto object-contain rounded-2xl drop-shadow-sm mix-blend-multiply"
               priority
             />
           </div>
