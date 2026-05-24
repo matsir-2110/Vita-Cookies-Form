@@ -24,6 +24,8 @@ const C = {
   deep: "#7d9b76",
 }
 
+import { supabase } from "@/lib/supabase"
+
 const steps = [
   {
     icon: Droplet,
@@ -43,6 +45,7 @@ const steps = [
 ]
 
 export function AcceptanceTest() {
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
     edad: "",
     genero: "",
@@ -53,10 +56,50 @@ export function AcceptanceTest() {
     sugerencias: "",
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Datos de Prueba de Aceptabilidad:", formData)
-    alert("¡Gracias por completar la prueba de aceptabilidad!")
+    
+    // Basic validation
+    if (!formData.satisfaccion) {
+      alert("Por favor, seleccione un nivel de satisfacción.")
+      return
+    }
+
+    setIsSubmitting(true)
+    
+    try {
+      const { error } = await supabase
+        .from('acceptance_tests')
+        .insert([
+          {
+            edad: formData.edad || null,
+            genero: formData.genero || null,
+            consume_snacks: formData.consumeSnacks || null,
+            satisfaccion: parseInt(formData.satisfaccion),
+            consumo_diario: formData.consumoDiario || null,
+            preferencia_ultraprocesado: formData.preferenciaUltraprocesado || null,
+            sugerencias: formData.sugerencias || null,
+          }
+        ])
+
+      if (error) throw error
+      
+      alert("¡Gracias por completar la prueba de aceptabilidad!")
+      setFormData({
+        edad: "",
+        genero: "",
+        consumeSnacks: "",
+        satisfaccion: "",
+        consumoDiario: "",
+        preferenciaUltraprocesado: "",
+        sugerencias: "",
+      })
+    } catch (error) {
+      console.error("Error al guardar:", error)
+      alert("Hubo un error al guardar los datos. Por favor, intente de nuevo.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -208,8 +251,8 @@ export function AcceptanceTest() {
             </div>
           </section>
 
-          <Button type="submit" className="w-full py-6 text-lg font-semibold">
-            Enviar Prueba de Aceptabilidad
+          <Button type="submit" className="w-full py-6 text-lg font-semibold" disabled={isSubmitting}>
+            {isSubmitting ? "Enviando..." : "Enviar Prueba de Aceptabilidad"}
           </Button>
         </form>
 
