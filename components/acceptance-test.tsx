@@ -44,12 +44,9 @@ const steps = [
   },
 ]
 
-export function AcceptanceTest() {
+export function AcceptanceTest({ evaluatorId }: { evaluatorId: string }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
-    edad: "",
-    genero: "",
-    consumeSnacks: "",
     satisfaccion: "",
     consumoDiario: "",
     preferenciaUltraprocesado: "",
@@ -72,9 +69,7 @@ export function AcceptanceTest() {
         .from('acceptance_tests')
         .insert([
           {
-            edad: formData.edad || null,
-            genero: formData.genero || null,
-            consume_snacks: formData.consumeSnacks || null,
+            evaluator_id: evaluatorId,
             satisfaccion: parseInt(formData.satisfaccion),
             consumo_diario: formData.consumoDiario || null,
             preferencia_ultraprocesado: formData.preferenciaUltraprocesado || null,
