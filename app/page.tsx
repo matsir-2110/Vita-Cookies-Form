@@ -88,7 +88,7 @@ export default function Home() {
 
       {/* Content */}
       <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col items-center">
-        <div className="w-full max-w-4xl">
+        <div className="w-full max-w-6xl">
           {activeTab === "info" && (
             <div className="flex justify-center">
               <ProductHero onComplete={(id) => {
