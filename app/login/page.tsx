@@ -35,8 +35,8 @@ export default function LoginPage() {
         return;
       }
 
-      // Redirigir al panel
-      window.location.href = "/admin";
+      // Login exitoso → redirigir al panel admin
+      window.location.href = "admin";
     } catch (err) {
       setError("Ocurrió un error al intentar iniciar sesión.");
       setLoading(false);
@@ -175,13 +175,11 @@ export default function LoginPage() {
             }}
             onMouseEnter={(e) => {
               if (!loading)
-                (e.target as HTMLButtonElement).style.backgroundColor =
-                  "#3a5a34";
+                (e.target as HTMLButtonElement).style.backgroundColor = "#3a5a34";
             }}
             onMouseLeave={(e) => {
               if (!loading)
-                (e.target as HTMLButtonElement).style.backgroundColor =
-                  "#4a6e43";
+                (e.target as HTMLButtonElement).style.backgroundColor = "#4a6e43";
             }}
           >
             {loading ? "Ingresando..." : "Ingresar"}
