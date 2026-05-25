@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
@@ -9,6 +10,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -26,18 +28,20 @@ export default function LoginPage() {
         .from('admin_cuenta')
         .select('*')
         .eq('usuario', username)
-        .eq('contraseña', password)
+        .eq('contrasena', password)
         .single();
 
       if (supabaseError || !data) {
+        console.error("Supabase auth error:", supabaseError);
         setError("Credenciales incorrectas. Verificá tu usuario y contraseña.");
         setLoading(false);
         return;
       }
 
       // Login exitoso → redirigir al panel admin
-      window.location.href = "admin";
+      router.push("/admin");
     } catch (err) {
+      console.error("Fetch error:", err);
       setError("Ocurrió un error al intentar iniciar sesión.");
       setLoading(false);
     }
