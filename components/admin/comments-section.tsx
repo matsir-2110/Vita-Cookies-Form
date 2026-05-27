@@ -12,8 +12,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { MessageSquare, Search, Filter, ThumbsUp, ThumbsDown, Minus } from "lucide-react"
+import { MessageSquare, Search, Filter, ThumbsUp, ThumbsDown, Minus, Info } from "lucide-react"
 import { supabase } from "@/lib/supabase"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 interface Comment {
   id: string
@@ -30,11 +36,11 @@ interface Comment {
 const getSentimentIcon = (sentiment: Comment["sentiment"]) => {
   switch (sentiment) {
     case "positive":
-      return <ThumbsUp className="w-4 h-4 text-primary" />
+      return <ThumbsUp className="w-4 h-4 text-primary mt-1 flex-shrink-0" />
     case "negative":
-      return <ThumbsDown className="w-4 h-4 text-destructive" />
+      return <ThumbsDown className="w-4 h-4 text-destructive mt-1 flex-shrink-0" />
     default:
-      return <Minus className="w-4 h-4 text-muted-foreground" />
+      return <Minus className="w-4 h-4 text-muted-foreground mt-1 flex-shrink-0" />
   }
 }
 
@@ -59,23 +65,47 @@ export function CommentsSection() {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const { data: acceptance } = await supabase.from('acceptance_tests').select('id, evaluator_id, satisfaccion, sugerencias, created_at, evaluators(edad)')
-        const { data: descriptive } = await supabase.from('descriptive_tests').select('id, evaluator_id, color, aroma, sabor, textura, comentarios, created_at, evaluators(edad)')
+        const [evalsResponse, accResponse, descResponse] = await Promise.all([
+          supabase.from('evaluators').select('id').order('created_at', { ascending: true }),
+          supabase.from('acceptance_tests').select('id, evaluator_id, satisfaccion, sugerencias, consumo_diario, preferencia_ultraprocesado, created_at, evaluators(edad)'),
+          supabase.from('descriptive_tests').select('id, evaluator_id, color, aroma, sabor, textura, comentarios, created_at, evaluators(edad)')
+        ])
+
+        const evaluatorsList = evalsResponse.data || []
+        const evaluatorNumberMap = new Map()
+        evaluatorsList.forEach((ev, index) => {
+          evaluatorNumberMap.set(ev.id, index + 1)
+        })
+
+        const acceptance = accResponse.data
+        const descriptive = descResponse.data
 
         const combined: Comment[] = []
 
         if (acceptance) {
           acceptance.forEach(a => {
-            if (a.sugerencias && a.sugerencias.trim().length > 0) {
+            const hasSugerencias = a.sugerencias && a.sugerencias.trim().length > 0
+            const hasConsumo = a.consumo_diario && a.consumo_diario.trim().length > 0
+            const hasPreferencia = a.preferencia_ultraprocesado && a.preferencia_ultraprocesado.trim().length > 0
+            
+            if (hasSugerencias || hasConsumo || hasPreferencia) {
               const rating = a.satisfaccion + 3
+              
+              let textParts = []
+              if (hasConsumo) textParts.push(`¿Lo consumiría diariamente?: ${a.consumo_diario}`)
+              if (hasPreferencia) textParts.push(`¿Lo elegiría sobre ultraprocesado?: ${a.preferencia_ultraprocesado}`)
+              if (hasSugerencias) textParts.push(`Sugerencia: ${a.sugerencias}`)
+
+              const evNumber = evaluatorNumberMap.get(a.evaluator_id) || '?'
+
               combined.push({
                 id: `acc-${a.id}`,
-                evaluator: `Ev. #${a.evaluator_id.substring(0, 5)}`,
+                evaluator: `Ev. Nº ${evNumber}`,
                 age: Array.isArray(a.evaluators) ? a.evaluators[0]?.edad : a.evaluators?.edad || "?",
                 date: new Date(a.created_at).toLocaleDateString(),
                 type: "acceptance",
                 rating: rating,
-                comment: a.sugerencias,
+                comment: textParts.join('\n\n'),
                 sentiment: rating >= 4 ? "positive" : rating <= 2 ? "negative" : "neutral",
                 timestamp: new Date(a.created_at).getTime(),
               })
@@ -87,14 +117,16 @@ export function CommentsSection() {
           descriptive.forEach(d => {
             if (d.comentarios && d.comentarios.trim().length > 0) {
               const rating = Math.round((d.color + d.aroma + d.sabor + d.textura) / 4)
+              const evNumber = evaluatorNumberMap.get(d.evaluator_id) || '?'
+
               combined.push({
                 id: `desc-${d.id}`,
-                evaluator: `Ev. #${d.evaluator_id.substring(0, 5)}`,
+                evaluator: `Ev. Nº ${evNumber}`,
                 age: Array.isArray(d.evaluators) ? d.evaluators[0]?.edad : d.evaluators?.edad || "?",
                 date: new Date(d.created_at).toLocaleDateString(),
                 type: "descriptive",
                 rating: rating,
-                comment: d.comentarios,
+                comment: `Observación técnica: ${d.comentarios}`,
                 sentiment: rating >= 4 ? "positive" : rating <= 2 ? "negative" : "neutral",
                 timestamp: new Date(d.created_at).getTime(),
               })
@@ -134,7 +166,35 @@ export function CommentsSection() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold text-foreground">Comentarios y Observaciones</h2>
+      <div className="flex items-center gap-3">
+        <h2 className="text-xl font-semibold text-foreground">Comentarios y Observaciones</h2>
+        <TooltipProvider delayDuration={300}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+                <Info className="w-4 h-4 text-muted-foreground" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-sm p-4 space-y-3 bg-card border-border shadow-lg" side="right">
+              <div>
+                <p className="font-semibold text-foreground mb-1">¿Cómo se calcula la calificación?</p>
+                <div className="space-y-2 text-sm text-muted-foreground">
+                  <p><strong>Aceptabilidad:</strong> La escala hedónica (-2 a +2) se convierte a un valor de 1 a 5 estrellas.</p>
+                  <p><strong>Descriptiva:</strong> Se obtiene el promedio de las calificaciones de color, aroma, sabor y textura (1 a 5).</p>
+                </div>
+              </div>
+              <div className="pt-2 border-t border-border">
+                <p className="font-semibold text-foreground text-xs mb-1">Sistema de Sentimiento:</p>
+                <ul className="text-xs space-y-1">
+                  <li className="flex items-center gap-2"><ThumbsUp className="w-3 h-3 text-primary" /> <span className="text-primary font-medium">Positivo:</span> 4 o 5 estrellas</li>
+                  <li className="flex items-center gap-2"><Minus className="w-3 h-3 text-muted-foreground" /> <span className="text-muted-foreground font-medium">Neutral:</span> 3 estrellas</li>
+                  <li className="flex items-center gap-2"><ThumbsDown className="w-3 h-3 text-destructive" /> <span className="text-destructive font-medium">Negativo:</span> 1 o 2 estrellas</li>
+                </ul>
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-3 gap-4">
@@ -257,7 +317,7 @@ export function CommentsSection() {
                   </div>
                   <div className="flex items-start gap-2 mt-3">
                     {getSentimentIcon(comment.sentiment)}
-                    <p className="text-foreground flex-1 italic text-sm">"{comment.comment}"</p>
+                    <p className="text-foreground flex-1 italic text-sm whitespace-pre-wrap">{comment.comment}</p>
                   </div>
                   <div className="mt-3 flex items-center gap-1 border-t border-border/50 pt-2">
                     <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mr-1">Calificación</span>
