@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -13,120 +13,19 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { MessageSquare, Search, Filter, ThumbsUp, ThumbsDown, Minus } from "lucide-react"
+import { supabase } from "@/lib/supabase"
 
 interface Comment {
-  id: number
+  id: string
   evaluator: string
-  age: string
+  age: string | number
   date: string
   type: "acceptance" | "descriptive"
   rating: number
   comment: string
   sentiment: "positive" | "negative" | "neutral"
+  timestamp: number
 }
-
-const comments: Comment[] = [
-  {
-    id: 1,
-    evaluator: "María G.",
-    age: "26-35",
-    date: "2024-01-15",
-    type: "acceptance",
-    rating: 5,
-    comment: "Excelente sabor y textura. Me encantó que sea una opción saludable sin perder el gusto dulce. Definitivamente lo compraría.",
-    sentiment: "positive",
-  },
-  {
-    id: 2,
-    evaluator: "Carlos P.",
-    age: "36-45",
-    date: "2024-01-15",
-    type: "acceptance",
-    rating: 4,
-    comment: "Muy buena galletita. El sabor a chocolate está bien equilibrado con los ingredientes naturales. Quizás podría ser un poco más crocante.",
-    sentiment: "positive",
-  },
-  {
-    id: 3,
-    evaluator: "Ana R.",
-    age: "18-25",
-    date: "2024-01-14",
-    type: "descriptive",
-    rating: 3,
-    comment: "El color es agradable pero el aroma podría ser más intenso. La textura es buena.",
-    sentiment: "neutral",
-  },
-  {
-    id: 4,
-    evaluator: "Juan M.",
-    age: "26-35",
-    date: "2024-01-14",
-    type: "acceptance",
-    rating: 5,
-    comment: "Como vegetariano, me alegra encontrar opciones como esta. El sabor es increíble y la textura perfecta.",
-    sentiment: "positive",
-  },
-  {
-    id: 5,
-    evaluator: "Laura S.",
-    age: "46-55",
-    date: "2024-01-13",
-    type: "acceptance",
-    rating: 2,
-    comment: "No me convenció del todo el sabor. Esperaba algo más dulce. La textura estaba bien.",
-    sentiment: "negative",
-  },
-  {
-    id: 6,
-    evaluator: "Pedro L.",
-    age: "18-25",
-    date: "2024-01-13",
-    type: "descriptive",
-    rating: 4,
-    comment: "Buen balance de sabores. El chocolate se siente presente sin opacar los otros ingredientes.",
-    sentiment: "positive",
-  },
-  {
-    id: 7,
-    evaluator: "Sofía V.",
-    age: "26-35",
-    date: "2024-01-12",
-    type: "acceptance",
-    rating: 4,
-    comment: "Me gustó mucho que tenga ingredientes naturales. El sabor es agradable y la presentación muy buena.",
-    sentiment: "positive",
-  },
-  {
-    id: 8,
-    evaluator: "Diego F.",
-    age: "36-45",
-    date: "2024-01-12",
-    type: "descriptive",
-    rating: 3,
-    comment: "El color dorado es atractivo. El aroma es moderado y el sabor está bien, aunque esperaba más intensidad.",
-    sentiment: "neutral",
-  },
-  {
-    id: 9,
-    evaluator: "Valentina C.",
-    age: "18-25",
-    date: "2024-01-11",
-    type: "acceptance",
-    rating: 5,
-    comment: "Increíble opción saludable. Me encanta que sea apto para vegetarianos y sin conservantes.",
-    sentiment: "positive",
-  },
-  {
-    id: 10,
-    evaluator: "Martín H.",
-    age: "26-35",
-    date: "2024-01-11",
-    type: "acceptance",
-    rating: 4,
-    comment: "Muy rica. Ideal para una merienda saludable. El chocolate le da un toque especial.",
-    sentiment: "positive",
-  },
-]
 
 const getSentimentIcon = (sentiment: Comment["sentiment"]) => {
   switch (sentiment) {
@@ -142,18 +41,78 @@ const getSentimentIcon = (sentiment: Comment["sentiment"]) => {
 const getSentimentBadge = (sentiment: Comment["sentiment"]) => {
   switch (sentiment) {
     case "positive":
-      return <Badge className="bg-primary/20 text-primary hover:bg-primary/30">Positivo</Badge>
+      return <Badge className="bg-primary/20 text-primary hover:bg-primary/30 border-0">Positivo</Badge>
     case "negative":
-      return <Badge className="bg-destructive/20 text-destructive hover:bg-destructive/30">Negativo</Badge>
+      return <Badge className="bg-destructive/20 text-destructive hover:bg-destructive/30 border-0">Negativo</Badge>
     default:
-      return <Badge className="bg-muted text-muted-foreground hover:bg-muted/80">Neutral</Badge>
+      return <Badge className="bg-muted text-muted-foreground hover:bg-muted/80 border-0">Neutral</Badge>
   }
 }
 
 export function CommentsSection() {
+  const [loading, setLoading] = useState(true)
+  const [comments, setComments] = useState<Comment[]>([])
   const [searchTerm, setSearchTerm] = useState("")
   const [filterType, setFilterType] = useState<string>("all")
   const [filterSentiment, setFilterSentiment] = useState<string>("all")
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const { data: acceptance } = await supabase.from('acceptance_tests').select('id, evaluator_id, satisfaccion, sugerencias, created_at, evaluators(edad)')
+        const { data: descriptive } = await supabase.from('descriptive_tests').select('id, evaluator_id, color, aroma, sabor, textura, comentarios, created_at, evaluators(edad)')
+
+        const combined: Comment[] = []
+
+        if (acceptance) {
+          acceptance.forEach(a => {
+            if (a.sugerencias && a.sugerencias.trim().length > 0) {
+              const rating = a.satisfaccion + 3
+              combined.push({
+                id: `acc-${a.id}`,
+                evaluator: `Ev. #${a.evaluator_id.substring(0, 5)}`,
+                age: Array.isArray(a.evaluators) ? a.evaluators[0]?.edad : a.evaluators?.edad || "?",
+                date: new Date(a.created_at).toLocaleDateString(),
+                type: "acceptance",
+                rating: rating,
+                comment: a.sugerencias,
+                sentiment: rating >= 4 ? "positive" : rating <= 2 ? "negative" : "neutral",
+                timestamp: new Date(a.created_at).getTime(),
+              })
+            }
+          })
+        }
+
+        if (descriptive) {
+          descriptive.forEach(d => {
+            if (d.comentarios && d.comentarios.trim().length > 0) {
+              const rating = Math.round((d.color + d.aroma + d.sabor + d.textura) / 4)
+              combined.push({
+                id: `desc-${d.id}`,
+                evaluator: `Ev. #${d.evaluator_id.substring(0, 5)}`,
+                age: Array.isArray(d.evaluators) ? d.evaluators[0]?.edad : d.evaluators?.edad || "?",
+                date: new Date(d.created_at).toLocaleDateString(),
+                type: "descriptive",
+                rating: rating,
+                comment: d.comentarios,
+                sentiment: rating >= 4 ? "positive" : rating <= 2 ? "negative" : "neutral",
+                timestamp: new Date(d.created_at).getTime(),
+              })
+            }
+          })
+        }
+
+        combined.sort((a, b) => b.timestamp - a.timestamp)
+        setComments(combined)
+      } catch (error) {
+        console.error("Error fetching comments:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchComments()
+  }, [])
 
   const filteredComments = comments.filter((comment) => {
     const matchesSearch = comment.comment.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -169,13 +128,17 @@ export function CommentsSection() {
     negative: comments.filter(c => c.sentiment === "negative").length,
   }
 
+  if (loading) {
+    return <div className="py-8 text-center text-muted-foreground">Cargando comentarios...</div>
+  }
+
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold text-foreground">Comentarios y Observaciones</h2>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-3 gap-4">
-        <Card className="bg-primary/10 border-primary/20">
+        <Card className="bg-primary/10 border-primary/20 shadow-none">
           <CardContent className="pt-4">
             <div className="flex items-center justify-between">
               <div>
@@ -186,7 +149,7 @@ export function CommentsSection() {
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-muted border-border">
+        <Card className="bg-muted border-border shadow-none">
           <CardContent className="pt-4">
             <div className="flex items-center justify-between">
               <div>
@@ -197,7 +160,7 @@ export function CommentsSection() {
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-destructive/10 border-destructive/20">
+        <Card className="bg-destructive/10 border-destructive/20 shadow-none">
           <CardContent className="pt-4">
             <div className="flex items-center justify-between">
               <div>
@@ -269,43 +232,47 @@ export function CommentsSection() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {filteredComments.map((comment) => (
-              <div
-                key={comment.id}
-                className="p-4 bg-secondary/30 rounded-lg border border-border"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-foreground">{comment.evaluator}</span>
-                    <Badge variant="outline" className="text-xs">
-                      {comment.age} años
-                    </Badge>
-                    <Badge variant="outline" className="text-xs">
-                      {comment.type === "acceptance" ? "Aceptabilidad" : "Descriptiva"}
-                    </Badge>
+            {filteredComments.length === 0 ? (
+              <div className="text-center text-muted-foreground py-4">No hay comentarios para mostrar.</div>
+            ) : (
+              filteredComments.map((comment) => (
+                <div
+                  key={comment.id}
+                  className="p-4 bg-secondary/30 rounded-lg border border-border"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-foreground">{comment.evaluator}</span>
+                      <Badge variant="outline" className="text-xs">
+                        {comment.age} años
+                      </Badge>
+                      <Badge variant="outline" className="text-xs">
+                        {comment.type === "acceptance" ? "Aceptabilidad" : "Descriptiva"}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {getSentimentBadge(comment.sentiment)}
+                      <span className="text-sm text-muted-foreground">{comment.date}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {getSentimentBadge(comment.sentiment)}
-                    <span className="text-sm text-muted-foreground">{comment.date}</span>
+                  <div className="flex items-start gap-2 mt-3">
+                    {getSentimentIcon(comment.sentiment)}
+                    <p className="text-foreground flex-1 italic text-sm">"{comment.comment}"</p>
+                  </div>
+                  <div className="mt-3 flex items-center gap-1 border-t border-border/50 pt-2">
+                    <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mr-1">Calificación</span>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <span
+                        key={star}
+                        className={`text-sm ${star <= comment.rating ? "text-primary" : "text-muted"}`}
+                      >
+                        ★
+                      </span>
+                    ))}
                   </div>
                 </div>
-                <div className="flex items-start gap-2">
-                  {getSentimentIcon(comment.sentiment)}
-                  <p className="text-foreground flex-1">{comment.comment}</p>
-                </div>
-                <div className="mt-2 flex items-center gap-1">
-                  <span className="text-sm text-muted-foreground">Calificación:</span>
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <span
-                      key={star}
-                      className={`text-lg ${star <= comment.rating ? "text-primary" : "text-muted"}`}
-                    >
-                      ★
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </CardContent>
       </Card>
