@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   RadarChart,
@@ -14,60 +15,119 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
 } from "recharts"
+import { supabase } from "@/lib/supabase"
 
 interface DescriptiveChartsProps {
   compact?: boolean
 }
 
-const attributeAverages = [
-  { attribute: "Color", promedio: 4.1, fullMark: 5 },
-  { attribute: "Aroma", promedio: 3.8, fullMark: 5 },
-  { attribute: "Sabor", promedio: 4.3, fullMark: 5 },
-  { attribute: "Textura", promedio: 3.9, fullMark: 5 },
-]
-
-const colorData = [
-  { nivel: "1 - Muy claro", cantidad: 2 },
-  { nivel: "2 - Claro", cantidad: 5 },
-  { nivel: "3 - Dorado", cantidad: 12 },
-  { nivel: "4 - Marrón claro", cantidad: 15 },
-  { nivel: "5 - Marrón oscuro", cantidad: 8 },
-]
-
-const aromaData = [
-  { nivel: "1 - Imperceptible", cantidad: 1 },
-  { nivel: "2 - Leve", cantidad: 6 },
-  { nivel: "3 - Moderado", cantidad: 14 },
-  { nivel: "4 - Intenso", cantidad: 16 },
-  { nivel: "5 - Muy intenso", cantidad: 5 },
-]
-
-const saborData = [
-  { nivel: "1 - Muy suave", cantidad: 1 },
-  { nivel: "2 - Suave", cantidad: 4 },
-  { nivel: "3 - Balanceado", cantidad: 10 },
-  { nivel: "4 - Intenso", cantidad: 18 },
-  { nivel: "5 - Muy intenso", cantidad: 9 },
-]
-
-const texturaData = [
-  { nivel: "1 - Muy blanda", cantidad: 2 },
-  { nivel: "2 - Blanda", cantidad: 7 },
-  { nivel: "3 - Intermedia", cantidad: 15 },
-  { nivel: "4 - Crocante", cantidad: 14 },
-  { nivel: "5 - Muy crocante", cantidad: 4 },
-]
-
-const comparisonData = [
-  { name: "Color", valor: 4.1 },
-  { name: "Aroma", valor: 3.8 },
-  { name: "Sabor", valor: 4.3 },
-  { name: "Textura", valor: 3.9 },
-]
-
 export function DescriptiveCharts({ compact = false }: DescriptiveChartsProps) {
+  const [loading, setLoading] = useState(true)
+  const [data, setData] = useState({
+    attributeAverages: [] as any[],
+    comparisonData: [] as any[],
+    colorData: [] as any[],
+    aromaData: [] as any[],
+    saborData: [] as any[],
+    texturaData: [] as any[],
+  })
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: tests } = await supabase.from('descriptive_tests').select('color, aroma, sabor, textura')
+        
+        if (!tests || tests.length === 0) {
+          setLoading(false)
+          return
+        }
+
+        const counts = {
+          color: [0, 0, 0, 0, 0],
+          aroma: [0, 0, 0, 0, 0],
+          sabor: [0, 0, 0, 0, 0],
+          textura: [0, 0, 0, 0, 0],
+        }
+
+        let sums = { color: 0, aroma: 0, sabor: 0, textura: 0 }
+
+        tests.forEach(t => {
+          if (t.color >= 1 && t.color <= 5) { counts.color[t.color - 1]++; sums.color += t.color }
+          if (t.aroma >= 1 && t.aroma <= 5) { counts.aroma[t.aroma - 1]++; sums.aroma += t.aroma }
+          if (t.sabor >= 1 && t.sabor <= 5) { counts.sabor[t.sabor - 1]++; sums.sabor += t.sabor }
+          if (t.textura >= 1 && t.textura <= 5) { counts.textura[t.textura - 1]++; sums.textura += t.textura }
+        })
+
+        const count = tests.length
+        const avg = {
+          color: Number((sums.color / count).toFixed(1)),
+          aroma: Number((sums.aroma / count).toFixed(1)),
+          sabor: Number((sums.sabor / count).toFixed(1)),
+          textura: Number((sums.textura / count).toFixed(1)),
+        }
+
+        const attributeAverages = [
+          { attribute: "Color", promedio: avg.color, fullMark: 5 },
+          { attribute: "Aroma", promedio: avg.aroma, fullMark: 5 },
+          { attribute: "Sabor", promedio: avg.sabor, fullMark: 5 },
+          { attribute: "Textura", promedio: avg.textura, fullMark: 5 },
+        ]
+
+        const comparisonData = [
+          { name: "Color", valor: avg.color },
+          { name: "Aroma", valor: avg.aroma },
+          { name: "Sabor", valor: avg.sabor },
+          { name: "Textura", valor: avg.textura },
+        ]
+
+        const colorData = [
+          { nivel: "1 - Muy claro", cantidad: counts.color[0] },
+          { nivel: "2 - Claro", cantidad: counts.color[1] },
+          { nivel: "3 - Dorado", cantidad: counts.color[2] },
+          { nivel: "4 - Marrón claro", cantidad: counts.color[3] },
+          { nivel: "5 - Marrón oscuro", cantidad: counts.color[4] },
+        ]
+
+        const aromaData = [
+          { nivel: "1 - Imperceptible", cantidad: counts.aroma[0] },
+          { nivel: "2 - Leve", cantidad: counts.aroma[1] },
+          { nivel: "3 - Moderado", cantidad: counts.aroma[2] },
+          { nivel: "4 - Intenso", cantidad: counts.aroma[3] },
+          { nivel: "5 - Muy intenso", cantidad: counts.aroma[4] },
+        ]
+
+        const saborData = [
+          { nivel: "1 - Muy suave", cantidad: counts.sabor[0] },
+          { nivel: "2 - Suave", cantidad: counts.sabor[1] },
+          { nivel: "3 - Balanceado", cantidad: counts.sabor[2] },
+          { nivel: "4 - Intenso", cantidad: counts.sabor[3] },
+          { nivel: "5 - Muy intenso", cantidad: counts.sabor[4] },
+        ]
+
+        const texturaData = [
+          { nivel: "1 - Muy blanda", cantidad: counts.textura[0] },
+          { nivel: "2 - Blanda", cantidad: counts.textura[1] },
+          { nivel: "3 - Intermedia", cantidad: counts.textura[2] },
+          { nivel: "4 - Crocante", cantidad: counts.textura[3] },
+          { nivel: "5 - Muy crocante", cantidad: counts.textura[4] },
+        ]
+
+        setData({ attributeAverages, comparisonData, colorData, aromaData, saborData, texturaData })
+      } catch (error) {
+        console.error("Error fetching descriptive charts data:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  if (loading) {
+    return <div className="p-8 text-center text-muted-foreground">Cargando gráficos descriptivos...</div>
+  }
+
   if (compact) {
     return (
       <Card className="bg-card border-border">
@@ -77,7 +137,7 @@ export function DescriptiveCharts({ compact = false }: DescriptiveChartsProps) {
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={200}>
-            <RadarChart data={attributeAverages}>
+            <RadarChart data={data.attributeAverages}>
               <PolarGrid stroke="#D4CFC2" />
               <PolarAngleAxis dataKey="attribute" stroke="#5A7A5A" tick={{ fontSize: 12 }} />
               <PolarRadiusAxis angle={30} domain={[0, 5]} stroke="#D4CFC2" />
@@ -108,7 +168,7 @@ export function DescriptiveCharts({ compact = false }: DescriptiveChartsProps) {
         <CardContent>
           <div className="grid md:grid-cols-2 gap-6">
             <ResponsiveContainer width="100%" height={300}>
-              <RadarChart data={attributeAverages}>
+              <RadarChart data={data.attributeAverages}>
                 <PolarGrid stroke="#D4CFC2" />
                 <PolarAngleAxis dataKey="attribute" stroke="#5A7A5A" />
                 <PolarRadiusAxis angle={30} domain={[0, 5]} stroke="#D4CFC2" />
@@ -129,7 +189,7 @@ export function DescriptiveCharts({ compact = false }: DescriptiveChartsProps) {
               </RadarChart>
             </ResponsiveContainer>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={comparisonData} layout="vertical">
+              <BarChart data={data.comparisonData} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" stroke="#D4CFC2" />
                 <XAxis type="number" domain={[0, 5]} stroke="#5A7A5A" />
                 <YAxis dataKey="name" type="category" stroke="#5A7A5A" width={70} />
@@ -153,11 +213,11 @@ export function DescriptiveCharts({ compact = false }: DescriptiveChartsProps) {
         <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle className="text-foreground">Color</CardTitle>
-            <CardDescription>De claro a oscuro - Promedio: 4.1</CardDescription>
+            <CardDescription>De claro a oscuro - Promedio: {data.attributeAverages.find(a => a.attribute === 'Color')?.promedio}</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={colorData}>
+              <BarChart data={data.colorData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#D4CFC2" />
                 <XAxis 
                   dataKey="nivel" 
@@ -165,7 +225,7 @@ export function DescriptiveCharts({ compact = false }: DescriptiveChartsProps) {
                   tick={{ fontSize: 10 }}
                   tickFormatter={(value) => value.split(" - ")[0]}
                 />
-                <YAxis stroke="#5A7A5A" />
+                <YAxis stroke="#5A7A5A" allowDecimals={false} />
                 <Tooltip 
                   contentStyle={{ 
                     backgroundColor: "#FEFCF7", 
@@ -183,11 +243,11 @@ export function DescriptiveCharts({ compact = false }: DescriptiveChartsProps) {
         <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle className="text-foreground">Aroma</CardTitle>
-            <CardDescription>Intensidad del aroma - Promedio: 3.8</CardDescription>
+            <CardDescription>Intensidad del aroma - Promedio: {data.attributeAverages.find(a => a.attribute === 'Aroma')?.promedio}</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={aromaData}>
+              <BarChart data={data.aromaData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#D4CFC2" />
                 <XAxis 
                   dataKey="nivel" 
@@ -195,7 +255,7 @@ export function DescriptiveCharts({ compact = false }: DescriptiveChartsProps) {
                   tick={{ fontSize: 10 }}
                   tickFormatter={(value) => value.split(" - ")[0]}
                 />
-                <YAxis stroke="#5A7A5A" />
+                <YAxis stroke="#5A7A5A" allowDecimals={false} />
                 <Tooltip 
                   contentStyle={{ 
                     backgroundColor: "#FEFCF7", 
@@ -213,11 +273,11 @@ export function DescriptiveCharts({ compact = false }: DescriptiveChartsProps) {
         <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle className="text-foreground">Sabor</CardTitle>
-            <CardDescription>Intensidad del sabor dulce/chocolate - Promedio: 4.3</CardDescription>
+            <CardDescription>Intensidad del sabor dulce/chocolate - Promedio: {data.attributeAverages.find(a => a.attribute === 'Sabor')?.promedio}</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={saborData}>
+              <BarChart data={data.saborData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#D4CFC2" />
                 <XAxis 
                   dataKey="nivel" 
@@ -225,7 +285,7 @@ export function DescriptiveCharts({ compact = false }: DescriptiveChartsProps) {
                   tick={{ fontSize: 10 }}
                   tickFormatter={(value) => value.split(" - ")[0]}
                 />
-                <YAxis stroke="#5A7A5A" />
+                <YAxis stroke="#5A7A5A" allowDecimals={false} />
                 <Tooltip 
                   contentStyle={{ 
                     backgroundColor: "#FEFCF7", 
@@ -243,11 +303,11 @@ export function DescriptiveCharts({ compact = false }: DescriptiveChartsProps) {
         <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle className="text-foreground">Textura</CardTitle>
-            <CardDescription>De blanda a crocante - Promedio: 3.9</CardDescription>
+            <CardDescription>De blanda a crocante - Promedio: {data.attributeAverages.find(a => a.attribute === 'Textura')?.promedio}</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={texturaData}>
+              <BarChart data={data.texturaData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#D4CFC2" />
                 <XAxis 
                   dataKey="nivel" 
@@ -255,7 +315,7 @@ export function DescriptiveCharts({ compact = false }: DescriptiveChartsProps) {
                   tick={{ fontSize: 10 }}
                   tickFormatter={(value) => value.split(" - ")[0]}
                 />
-                <YAxis stroke="#5A7A5A" />
+                <YAxis stroke="#5A7A5A" allowDecimals={false} />
                 <Tooltip 
                   contentStyle={{ 
                     backgroundColor: "#FEFCF7", 
