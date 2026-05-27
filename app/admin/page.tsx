@@ -69,8 +69,8 @@ export default function AdminPage() {
         {/* Logo/Brand */}
         <div className="p-6 border-b border-border">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/25">
-              <Leaf className="w-5 h-5 text-primary-foreground" />
+            <div className="w-10 h-10 flex items-center justify-cente">
+              <img src="/logo-vita2.png"/>
             </div>
             <div>
               <h1 className="font-bold text-foreground">Panel Admin</h1>

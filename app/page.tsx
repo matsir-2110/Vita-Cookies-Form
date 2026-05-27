@@ -138,13 +138,20 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-primary/10 border-t border-border py-6 mt-8">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <p className="text-sm text-muted-foreground">
-            Evaluación Sensorial de Galletitas de Avena, Lentejas, Vegetales y Chocolate
-          </p>
-          <p className="text-xs text-muted-foreground mt-1">
-             Univ. de la Cuenca del Plata · Lic. en Nutrición - ISI
-          </p>
+        <div className="max-w-4xl mx-auto px-4 flex justify-between items-end">
+          <div className="text-right">
+            <p className="text-xs text-muted-foreground">
+              Version 1.00
+            </p>
+          </div>
+          <div className="text-center flex-1">
+            <p className="text-sm text-muted-foreground">
+              Evaluación Sensorial de Galletitas de Avena, Lentejas, Vegetales y Chocolate
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+               Univ. de la Cuenca del Plata · Lic. en Nutrición - ISI
+            </p>
+          </div>
         </div>
       </footer>
     </main>
