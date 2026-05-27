@@ -44,7 +44,7 @@ const steps = [
   },
 ]
 
-export function AcceptanceTest({ evaluatorId }: { evaluatorId: string }) {
+export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: string, onComplete?: () => void }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false)
   const [formData, setFormData] = useState({
@@ -83,14 +83,13 @@ export function AcceptanceTest({ evaluatorId }: { evaluatorId: string }) {
       
       alert("¡Gracias por completar la prueba de aceptabilidad!")
       setFormData({
-        edad: "",
-        genero: "",
-        consumeSnacks: "",
         satisfaccion: "",
         consumoDiario: "",
         preferenciaUltraprocesado: "",
         sugerencias: "",
       })
+      setHasAttemptedSubmit(false)
+      onComplete?.()
     } catch (error) {
       console.error("Error al guardar:", error)
       alert("Hubo un error al guardar los datos. Por favor, intente de nuevo.")
