@@ -13,6 +13,7 @@ type TabType = "info" | "acceptance" | "descriptive"
 export default function Home() {
   const [activeTab, setActiveTab] = useState<TabType>("info")
   const [evaluatorId, setEvaluatorId] = useState<string | null>(null)
+  const [acceptanceCompleted, setAcceptanceCompleted] = useState(false)
   const router = useRouter()
 
   const tabs = [
@@ -22,13 +23,29 @@ export default function Home() {
   ]
 
   const handleTabClick = (tabId: TabType) => {
-    if (tabId !== "info" && !evaluatorId) {
-      alert("Por favor, complete la Información del Evaluador antes de avanzar a las pruebas.")
-      return
-    }
     if (tabId === "info" && evaluatorId) {
       alert("La información ya fue guardada. Por favor, continúe con las pruebas.")
       return
+    }
+    if (tabId === "acceptance") {
+      if (!evaluatorId) {
+        alert("Por favor, complete la Información del Evaluador antes de avanzar.")
+        return
+      }
+      if (acceptanceCompleted) {
+        alert("La prueba de aceptabilidad ya fue completada. Por favor, continúe con la prueba descriptiva.")
+        return
+      }
+    }
+    if (tabId === "descriptive") {
+      if (!evaluatorId) {
+        alert("Por favor, complete la Información del Evaluador primero.")
+        return
+      }
+      if (!acceptanceCompleted) {
+        alert("Por favor, complete la Prueba de Aceptabilidad antes de avanzar.")
+        return
+      }
     }
     setActiveTab(tabId)
   }
@@ -64,7 +81,10 @@ export default function Home() {
           <div className="flex gap-1 overflow-x-auto py-2 justify-center">
             {tabs.map((tab) => {
               const Icon = tab.icon
-              const isLocked = (tab.id === "info" && evaluatorId !== null) || (tab.id !== "info" && evaluatorId === null);
+              let isLocked = false
+              if (tab.id === "info" && evaluatorId !== null) isLocked = true
+              if (tab.id === "acceptance" && (evaluatorId === null || acceptanceCompleted)) isLocked = true
+              if (tab.id === "descriptive" && !acceptanceCompleted) isLocked = true
               
               return (
                 <Button
@@ -99,7 +119,13 @@ export default function Home() {
           )}
           {activeTab === "acceptance" && (
             <div className="max-w-3xl mx-auto">
-              <AcceptanceTest evaluatorId={evaluatorId!} />
+              <AcceptanceTest 
+                evaluatorId={evaluatorId!} 
+                onComplete={() => {
+                  setAcceptanceCompleted(true);
+                  setActiveTab("descriptive");
+                }}
+              />
             </div>
           )}
           {activeTab === "descriptive" && (
