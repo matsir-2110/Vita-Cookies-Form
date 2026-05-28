@@ -58,7 +58,6 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
     e.preventDefault()
     setHasAttemptedSubmit(true)
     
-    // Basic validation
     if (!formData.satisfaccion || !formData.consumoDiario.trim() || !formData.preferenciaUltraprocesado.trim()) {
       alert("Por favor, complete todos los campos obligatorios (marcados en rojo).")
       return
@@ -178,7 +177,7 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
               I. Escala Hedónica de Aceptación
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Seleccione solo una option basada en su percepción sensorial inmediata.
+              Seleccione solo una opción basada en su percepción sensorial inmediata.
             </p>
 
             <RadioGroup

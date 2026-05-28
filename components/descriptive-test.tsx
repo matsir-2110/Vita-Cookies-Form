@@ -83,7 +83,6 @@ export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
 
       alert("¡Gracias por completar la prueba descriptiva!")
       setFormData({
-        juezNumero: "",
         color: "",
         aroma: "",
         sabor: "",
