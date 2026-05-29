@@ -11,19 +11,19 @@ import { supabase } from "@/lib/supabase"
 
 const features = [
   {
-    title: "Desarrollo Innovador",
+    title: "Desarrollo innovador",
     description: "Galletas vegetales diseñadas para integrar sinérgicamente manzana, zanahoria, avena y lentejas."
   },
   {
-    title: "Complementación Proteica",
+    title: "Complementación proteica",
     description: "Diseño técnico que busca elevar el valor biológico mediante la unión de legumbres y cereales."
   },
   {
-    title: "Aceptación Sensorial",
+    title: "Aceptación sensorial",
     description: "Enriquecidas con chips de chocolate, canela y vainilla para un perfil altamente atractivo."
   },
   {
-    title: "Snack Nutricional",
+    title: "Snack nutricional",
     description: "Una alternativa de alta densidad nutricional frente a los productos industriales tradicionales."
   }
 ]
@@ -172,7 +172,7 @@ export function ProductHero({ onComplete, isReadOnly }: ProductHeroProps) {
                       <span className="h-px flex-1 bg-gradient-to-r from-primary/30 to-transparent" />
                     </div>
                     <h3 className="text-2xl font-bold text-foreground leading-tight">
-                      Información del Evaluador
+                      Información del evaluador
                     </h3>
                     <p className="text-sm text-muted-foreground mt-2 max-w-xl">
                       Antes de comenzar con la evaluación, complete sus datos básicos.
@@ -286,7 +286,7 @@ export function ProductHero({ onComplete, isReadOnly }: ProductHeroProps) {
                 className="inline-block bg-primary text-primary-foreground px-8 py-3 rounded-full hover:bg-primary/90 transition-colors disabled:opacity-50"
               >
                 <p className="text-lg font-medium">
-                  {isSubmitting ? "Guardando..." : "Guardar Datos y Continuar"}
+                  {isSubmitting ? "Guardando..." : "Guardar datos y continuar"}
                 </p>
               </button>
             </div>
