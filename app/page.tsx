@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { ProductHero } from "@/components/product-hero"
 import { AcceptanceTest } from "@/components/acceptance-test"
@@ -14,6 +14,44 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<TabType>("info")
   const [evaluatorId, setEvaluatorId] = useState<string | null>(null)
   const [acceptanceCompleted, setAcceptanceCompleted] = useState(false)
+  const [processCompleted, setProcessCompleted] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  useEffect(() => {
+    const savedTab = localStorage.getItem("activeTab") as TabType | null
+    const savedEvaluatorId = localStorage.getItem("evaluatorId")
+    const savedAcceptanceCompleted = localStorage.getItem("acceptanceCompleted")
+    const savedProcessCompleted = localStorage.getItem("processCompleted")
+
+    if (savedTab) setActiveTab(savedTab)
+    if (savedEvaluatorId) setEvaluatorId(savedEvaluatorId)
+    if (savedAcceptanceCompleted === "true") setAcceptanceCompleted(true)
+    if (savedProcessCompleted === "true") setProcessCompleted(true)
+    
+    setIsLoaded(true)
+  }, [])
+
+  useEffect(() => {
+    if (isLoaded) localStorage.setItem("activeTab", activeTab)
+  }, [activeTab, isLoaded])
+
+  useEffect(() => {
+    if (isLoaded) {
+      if (evaluatorId) {
+        localStorage.setItem("evaluatorId", evaluatorId)
+      } else {
+        localStorage.removeItem("evaluatorId")
+      }
+    }
+  }, [evaluatorId, isLoaded])
+
+  useEffect(() => {
+    if (isLoaded) localStorage.setItem("acceptanceCompleted", acceptanceCompleted.toString())
+  }, [acceptanceCompleted, isLoaded])
+
+  useEffect(() => {
+    if (isLoaded) localStorage.setItem("processCompleted", processCompleted.toString())
+  }, [processCompleted, isLoaded])
   const router = useRouter()
 
   const tabs = [
@@ -23,7 +61,11 @@ export default function Home() {
   ]
 
   const handleTabClick = (tabId: TabType) => {
-    if (tabId === "info" && evaluatorId) {
+    if (processCompleted && tabId !== "info") {
+      alert("Ya has completado todas las pruebas. ¡Gracias por participar!")
+      return
+    }
+    if (tabId === "info" && evaluatorId && !processCompleted) {
       alert("La información ya fue guardada. Por favor, continúe con las pruebas.")
       return
     }
@@ -82,9 +124,9 @@ export default function Home() {
             {tabs.map((tab) => {
               const Icon = tab.icon
               let isLocked = false
-              if (tab.id === "info" && evaluatorId !== null) isLocked = true
-              if (tab.id === "acceptance" && (evaluatorId === null || acceptanceCompleted)) isLocked = true
-              if (tab.id === "descriptive" && !acceptanceCompleted) isLocked = true
+              if (tab.id === "info" && evaluatorId !== null && !processCompleted) isLocked = true
+              if (tab.id === "acceptance" && (evaluatorId === null || acceptanceCompleted || processCompleted)) isLocked = true
+              if (tab.id === "descriptive" && (!acceptanceCompleted || processCompleted)) isLocked = true
               
               return (
                 <Button
@@ -111,10 +153,13 @@ export default function Home() {
         <div className="w-full max-w-6xl">
           {activeTab === "info" && (
             <div className="flex justify-center">
-              <ProductHero onComplete={(id) => {
-                setEvaluatorId(id);
-                setActiveTab("acceptance");
-              }} />
+              <ProductHero 
+                isReadOnly={processCompleted}
+                onComplete={(id) => {
+                  setEvaluatorId(id);
+                  setActiveTab("acceptance");
+                }} 
+              />
             </div>
           )}
           {activeTab === "acceptance" && (
@@ -130,7 +175,13 @@ export default function Home() {
           )}
           {activeTab === "descriptive" && (
             <div className="max-w-3xl mx-auto">
-              <DescriptiveTest evaluatorId={evaluatorId!} />
+              <DescriptiveTest 
+                evaluatorId={evaluatorId!} 
+                onComplete={() => {
+                  setProcessCompleted(true);
+                  setActiveTab("info");
+                }}
+              />
             </div>
           )}
         </div>
