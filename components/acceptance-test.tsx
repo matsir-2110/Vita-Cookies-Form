@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -47,6 +47,7 @@ const steps = [
 export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: string, onComplete?: () => void }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
   const [formData, setFormData] = useState({
     satisfaccion: "",
     consumoDiario: "",
@@ -54,17 +55,34 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
     sugerencias: "",
   })
 
+  useEffect(() => {
+    const saved = localStorage.getItem("acceptanceTestData")
+    if (saved) {
+      try {
+        setFormData(JSON.parse(saved))
+      } catch (e) {
+        console.error("Error loading saved data", e)
+      }
+    }
+    setIsLoaded(true)
+  }, [])
+
+  useEffect(() => {
+    if (isLoaded) localStorage.setItem("acceptanceTestData", JSON.stringify(formData))
+  }, [formData, isLoaded])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setHasAttemptedSubmit(true)
-    
+
+    // Basic validation
     if (!formData.satisfaccion || !formData.consumoDiario.trim() || !formData.preferenciaUltraprocesado.trim()) {
       alert("Por favor, complete todos los campos obligatorios (marcados en rojo).")
       return
     }
 
     setIsSubmitting(true)
-    
+
     try {
       const { error } = await supabase
         .from('acceptance_tests')
@@ -79,8 +97,9 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
         ])
 
       if (error) throw error
-      
+
       alert("¡Gracias por completar la prueba de aceptabilidad!")
+      localStorage.removeItem("acceptanceTestData")
       setFormData({
         satisfaccion: "",
         consumoDiario: "",
@@ -180,7 +199,7 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
               I. Escala Hedónica de Aceptación
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Seleccione solo una opción basada en su percepción sensorial inmediata.
+              Seleccione solo una option basada en su percepción sensorial inmediata.
             </p>
 
             <RadioGroup
@@ -191,11 +210,10 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
               {satisfactionLevels.map((level) => (
                 <div
                   key={level.value}
-                  className={`flex items-center space-x-3 p-3 rounded-lg border-2 transition-all cursor-pointer ${
-                    formData.satisfaccion === level.value
-                      ? "border-primary bg-primary/10"
-                      : "border-border hover:border-primary/50 hover:bg-muted/50"
-                  }`}
+                  className={`flex items-center space-x-3 p-3 rounded-lg border-2 transition-all cursor-pointer ${formData.satisfaccion === level.value
+                    ? "border-primary bg-primary/10"
+                    : "border-border hover:border-primary/50 hover:bg-muted/50"
+                    }`}
                 >
                   <RadioGroupItem value={level.value} id={`satisfaction-${level.value}`} />
                   <Label htmlFor={`satisfaction-${level.value}`} className="flex-1 cursor-pointer font-medium">
