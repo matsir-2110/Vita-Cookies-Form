@@ -199,7 +199,7 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
               I. Escala Hedónica de Aceptación
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Seleccione solo una option basada en su percepción sensorial inmediata.
+              Seleccione solo una opción basada en su percepción sensorial inmediata.
             </p>
 
             <RadioGroup
