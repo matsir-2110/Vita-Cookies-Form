@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -47,6 +47,7 @@ const steps = [
 export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: string, onComplete?: () => void }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
   const [formData, setFormData] = useState({
     satisfaccion: "",
     consumoDiario: "",
@@ -54,10 +55,26 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
     sugerencias: "",
   })
 
+  useEffect(() => {
+    const saved = localStorage.getItem("acceptanceTestData")
+    if (saved) {
+      try {
+        setFormData(JSON.parse(saved))
+      } catch (e) {
+        console.error("Error loading saved data", e)
+      }
+    }
+    setIsLoaded(true)
+  }, [])
+
+  useEffect(() => {
+    if (isLoaded) localStorage.setItem("acceptanceTestData", JSON.stringify(formData))
+  }, [formData, isLoaded])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setHasAttemptedSubmit(true)
-    
+
     // Basic validation
     if (!formData.satisfaccion || !formData.consumoDiario.trim() || !formData.preferenciaUltraprocesado.trim()) {
       alert("Por favor, complete todos los campos obligatorios (marcados en rojo).")
@@ -65,7 +82,7 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
     }
 
     setIsSubmitting(true)
-    
+
     try {
       const { error } = await supabase
         .from('acceptance_tests')
@@ -80,8 +97,9 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
         ])
 
       if (error) throw error
-      
+
       alert("¡Gracias por completar la prueba de aceptabilidad!")
+      localStorage.removeItem("acceptanceTestData")
       setFormData({
         satisfaccion: "",
         consumoDiario: "",
@@ -144,12 +162,12 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
               Guía de Evaluación
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 md:divide-x divide-gray-200">
+            <div className="grid grid-cols-1 md:grid-cols-3 md:divide-x divide-gray-200 gap-y-8 md:gap-y-0">
               {[
                 { n: 1, key: "Limpia", text: "Beba agua para limpiar su paladar antes de comenzar." },
                 { n: 2, key: "Prueba", text: "Deguste la muestra de galletita proporcionada." },
                 { n: 3, key: "Evalúa", text: "Marque el enunciado que mejor represente su satisfacción." },
-              ].map((s) => (
+              ].map((s, i, arr) => (
                 <div key={s.n} className="flex flex-col items-center text-center px-4 md:px-8">
                   <span
                     className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold mb-4"
@@ -166,6 +184,9 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
                   <p className="text-sm leading-relaxed" style={{ color: "#5a6b7d" }}>
                     {s.text}
                   </p>
+                  {i < arr.length - 1 && (
+                    <div className="md:hidden mt-6 w-12 h-px" style={{ backgroundColor: "#d4cfc2" }} />
+                  )}
                 </div>
               ))}
             </div>
@@ -189,11 +210,10 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
               {satisfactionLevels.map((level) => (
                 <div
                   key={level.value}
-                  className={`flex items-center space-x-3 p-3 rounded-lg border-2 transition-all cursor-pointer ${
-                    formData.satisfaccion === level.value
-                      ? "border-primary bg-primary/10"
-                      : "border-border hover:border-primary/50 hover:bg-muted/50"
-                  }`}
+                  className={`flex items-center space-x-3 p-3 rounded-lg border-2 transition-all cursor-pointer ${formData.satisfaccion === level.value
+                    ? "border-primary bg-primary/10"
+                    : "border-border hover:border-primary/50 hover:bg-muted/50"
+                    }`}
                 >
                   <RadioGroupItem value={level.value} id={`satisfaction-${level.value}`} />
                   <Label htmlFor={`satisfaction-${level.value}`} className="flex-1 cursor-pointer font-medium">
