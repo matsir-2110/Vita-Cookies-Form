@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -40,8 +40,9 @@ const attributes = [
   },
 ]
 
-export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
+export function DescriptiveTest({ evaluatorId, onComplete }: { evaluatorId: string, onComplete?: () => void }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
   const [formData, setFormData] = useState({
     color: "",
     aroma: "",
@@ -50,13 +51,29 @@ export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
     comentarios: "",
   })
 
+  useEffect(() => {
+    const saved = localStorage.getItem("descriptiveTestData")
+    if (saved) {
+      try {
+        setFormData(JSON.parse(saved))
+      } catch (e) {
+        console.error("Error loading saved data", e)
+      }
+    }
+    setIsLoaded(true)
+  }, [])
+
+  useEffect(() => {
+    if (isLoaded) localStorage.setItem("descriptiveTestData", JSON.stringify(formData))
+  }, [formData, isLoaded])
+
   const handleAttributeChange = (attributeId: string, value: string) => {
     setFormData((prev) => ({ ...prev, [attributeId]: value }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     // Basic validation
     if (!formData.color || !formData.aroma || !formData.sabor || !formData.textura) {
       alert("Por favor, califique todos los atributos antes de enviar.")
@@ -82,6 +99,7 @@ export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
       if (error) throw error
 
       alert("¡Gracias por completar la prueba descriptiva!")
+      localStorage.removeItem("descriptiveTestData")
       setFormData({
         color: "",
         aroma: "",
@@ -89,6 +107,7 @@ export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
         textura: "",
         comentarios: "",
       })
+      onComplete?.()
     } catch (error: any) {
       console.error("Error al guardar:", error)
       alert(`Hubo un error al guardar los datos: ${error?.message || "Error desconocido"}. Por favor, intente de nuevo.`)
@@ -133,7 +152,7 @@ export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
         <form onSubmit={handleSubmit} className="space-y-8">
 
           {/* Instrucciones para el evaluador */}
-          <section className="pt-0 pb-8 md:pb-10">
+          <section className="pt-0 pb-8 md:pb-10 ">
             <h3
               className="flex items-center justify-center gap-6 text-lg font-semibold mb-10 before:content-[''] before:flex-1 before:h-[1px] before:bg-gradient-to-r before:from-transparent before:to-[#1f2a3d] after:content-[''] after:flex-1 after:h-[1px] after:bg-gradient-to-l after:from-transparent after:to-[#1f2a3d]"
               style={{ color: "#1f2a3d" }}
@@ -196,11 +215,10 @@ export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
                         key={value}
                         type="button"
                         onClick={() => handleAttributeChange(attribute.id, value.toString())}
-                        className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-sm md:text-base font-semibold transition-all ${
-                          formData[attribute.id as keyof typeof formData] === value.toString()
-                            ? "bg-primary text-primary-foreground scale-110 shadow-lg"
-                            : "bg-card text-foreground hover:bg-primary/20 border-2 border-border"
-                        }`}
+                        className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-sm md:text-base font-semibold transition-all ${formData[attribute.id as keyof typeof formData] === value.toString()
+                          ? "bg-primary text-primary-foreground scale-110 shadow-lg"
+                          : "bg-card text-foreground hover:bg-primary/20 border-2 border-border"
+                          }`}
                         aria-label={`Valor ${value} para ${attribute.title}`}
                       >
                         {value}
@@ -230,7 +248,7 @@ export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
               onChange={(e) => setFormData({ ...formData, comentarios: e.target.value })}
               placeholder="Escriba sus comentarios técnicos..."
               className="bg-card min-h-[100px]"
-            />  
+            />
           </section>
 
           <Button type="submit" className="w-full py-6 text-lg font-semibold" disabled={isSubmitting}>
