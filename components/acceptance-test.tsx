@@ -143,12 +143,12 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
               Guía de Evaluación
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 md:divide-x divide-gray-200">
+            <div className="grid grid-cols-1 md:grid-cols-3 md:divide-x divide-gray-200 gap-y-8 md:gap-y-0">
               {[
                 { n: 1, key: "Limpia", text: "Beba agua para limpiar su paladar antes de comenzar." },
                 { n: 2, key: "Prueba", text: "Deguste la muestra de galletita proporcionada." },
                 { n: 3, key: "Evalúa", text: "Marque el enunciado que mejor represente su satisfacción." },
-              ].map((s) => (
+              ].map((s, i, arr) => (
                 <div key={s.n} className="flex flex-col items-center text-center px-4 md:px-8">
                   <span
                     className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold mb-4"
@@ -165,6 +165,9 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
                   <p className="text-sm leading-relaxed" style={{ color: "#5a6b7d" }}>
                     {s.text}
                   </p>
+                  {i < arr.length - 1 && (
+                    <div className="md:hidden mt-6 w-12 h-px" style={{ backgroundColor: "#d4cfc2" }} />
+                  )}
                 </div>
               ))}
             </div>

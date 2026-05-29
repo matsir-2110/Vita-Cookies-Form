@@ -141,12 +141,12 @@ export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
               Instrucciones
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 md:divide-x divide-gray-200">
+            <div className="grid grid-cols-1 md:grid-cols-3 md:divide-x divide-gray-200 gap-y-8 md:gap-y-0">
               {[
                 { n: 1, key: "Observar", text: "Analice cada atributo sensorial de la muestra con atención y sin apuro." },
                 { n: 2, key: "Percibir", text: "Identifique la intensidad percibida de color, aroma, sabor y textura." },
                 { n: 3, key: "Calificar", text: "Marque en la escala de 1 a 5 el valor que mejor represente su percepción." },
-              ].map((s) => (
+              ].map((s, i, arr) => (
                 <div key={s.n} className="flex flex-col items-center text-center px-4 md:px-8">
                   <span
                     className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold mb-4"
@@ -163,6 +163,9 @@ export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
                   <p className="text-sm leading-relaxed" style={{ color: "#5a6b7d" }}>
                     {s.text}
                   </p>
+                  {i < arr.length - 1 && (
+                    <div className="md:hidden mt-6 w-12 h-px" style={{ backgroundColor: "#d4cfc2" }} />
+                  )}
                 </div>
               ))}
             </div>
