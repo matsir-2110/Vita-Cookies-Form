@@ -98,10 +98,10 @@ export default function Home() {
       <header className="bg-primary text-primary-foreground py-4 px-4 shadow-md relative">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-lg md:text-xl font-semibold text-center pr-10 md:pr-0">
-            Evaluación Sensorial - Galletitas Vegetales Sustentables
+            Evaluación sensorial - Galletitas vegetales sustentables
           </h1>
           <p className="text-sm text-center opacity-90 mt-1 pr-10 md:pr-0">
-            Universidad de la Cuenca del Plata
+            Universidad de la cuenca del plata
           </p>
         </div>
         <div className="absolute right-4 top-1/2 -translate-y-1/2">
@@ -192,15 +192,15 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-4 flex justify-between items-end">
           <div className="text-right">
             <p className="text-xs text-muted-foreground">
-              Version 1.00
+              Version 1.0.1
             </p>
           </div>
           <div className="text-center flex-1">
             <p className="text-sm text-muted-foreground">
-              Evaluación Sensorial de Galletitas de Avena, Lentejas, Vegetales y Chocolate
+              Evaluación sensorial de galletitas de avena, lentejas, vegetales y chocolate
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-               Univ. de la Cuenca del Plata · Lic. en Nutrición - ISI
+               Univ. de la cuenca del plata · Lic. en nutrición - ISI
             </p>
           </div>
         </div>
