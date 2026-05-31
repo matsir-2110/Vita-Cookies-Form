@@ -60,6 +60,13 @@ export default function Home() {
     { id: "descriptive" as const, label: "Prueba Descriptiva", icon: FileText },
   ]
 
+  const handleReset = () => {
+    setActiveTab("info")
+    setEvaluatorId(null)
+    setAcceptanceCompleted(false)
+    setProcessCompleted(false)
+  }
+
   const handleTabClick = (tabId: TabType) => {
     if (processCompleted && tabId !== "info") {
       alert("Ya has completado todas las pruebas. ¡Gracias por participar!")
@@ -158,7 +165,8 @@ export default function Home() {
                 onComplete={(id) => {
                   setEvaluatorId(id);
                   setActiveTab("acceptance");
-                }} 
+                }}
+                onReset={handleReset}
               />
             </div>
           )}
