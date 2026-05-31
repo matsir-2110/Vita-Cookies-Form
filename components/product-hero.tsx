@@ -30,10 +30,11 @@ const features = [
 
 interface ProductHeroProps {
   onComplete?: (evaluatorId: string) => void;
+  onReset?: () => void;
   isReadOnly?: boolean;
 }
 
-export function ProductHero({ onComplete, isReadOnly }: ProductHeroProps) {
+export function ProductHero({ onComplete, onReset, isReadOnly }: ProductHeroProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
@@ -292,9 +293,17 @@ export function ProductHero({ onComplete, isReadOnly }: ProductHeroProps) {
             </div>
           </>
         ) : (
-          <div className="mt-12 text-center bg-primary/10 p-8 rounded-2xl border border-primary/20">
+          <div className="mt-12 text-center bg-primary/10 p-8 rounded-2xl border border-primary/20 flex flex-col items-center">
             <h3 className="text-2xl font-bold text-foreground mb-4">¡Muchas gracias por participar!</h3>
-            <p className="text-muted-foreground text-lg">Has completado todas las evaluaciones correctamente. Ya puedes cerrar esta ventana.</p>
+            <p className="text-muted-foreground text-lg mb-8">Has completado todas las evaluaciones correctamente.</p>
+            <button
+              onClick={onReset}
+              className="inline-block bg-primary text-primary-foreground px-8 py-3 rounded-full hover:bg-primary/90 transition-colors"
+            >
+              <p className="text-lg font-medium">
+                Realizar nueva evaluación
+              </p>
+            </button>
           </div>
         )}
       </div>
