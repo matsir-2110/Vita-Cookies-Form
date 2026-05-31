@@ -197,18 +197,18 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-primary/10 border-t border-border py-6 mt-8">
-        <div className="max-w-4xl mx-auto px-4 flex justify-between items-end">
-          <div className="text-right">
-            <p className="text-xs text-muted-foreground">
-              Version 1.0.3
-            </p>
-          </div>
-          <div className="text-center flex-1">
+        <div className="max-w-4xl mx-auto px-4 flex flex-col items-center gap-3">
+          <div className="text-center">
             <p className="text-sm text-muted-foreground">
-              Evaluación sensorial de galletitas de avena, lentejas, vegetales y chocolate
+              Galletitas de avena, lentejas, vegetales y chocolate
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-               Univ. de la cuenca del plata · Lic. en nutrición - ISI
+              Lic. en nutrición - ISI
+            </p>
+          </div>
+          <div className="w-full">
+            <p className="text-xs text-muted-foreground text-right">
+              Version 1.0.3
             </p>
           </div>
         </div>
