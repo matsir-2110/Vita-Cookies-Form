@@ -14,6 +14,47 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<TabType>("info")
   const [evaluatorId, setEvaluatorId] = useState<string | null>(null)
   const [acceptanceCompleted, setAcceptanceCompleted] = useState(false)
+<<<<<<< Updated upstream
+=======
+  const [processCompleted, setProcessCompleted] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  useEffect(() => {
+    const savedTab = localStorage.getItem("activeTab") as TabType | null
+    const savedEvaluatorId = localStorage.getItem("evaluatorId")
+    const savedAcceptanceCompleted = localStorage.getItem("acceptanceCompleted")
+    const savedProcessCompleted = localStorage.getItem("processCompleted")
+
+    if (savedTab) setActiveTab(savedTab)
+    if (savedEvaluatorId) setEvaluatorId(savedEvaluatorId)
+    if (savedAcceptanceCompleted === "true") setAcceptanceCompleted(true)
+    if (savedProcessCompleted === "true") setProcessCompleted(true)
+
+    setIsLoaded(true)
+  }, [])
+
+  useEffect(() => {
+    if (isLoaded) localStorage.setItem("activeTab", activeTab)
+  }, [activeTab, isLoaded])
+
+  useEffect(() => {
+    if (isLoaded) {
+      if (evaluatorId) {
+        localStorage.setItem("evaluatorId", evaluatorId)
+      } else {
+        localStorage.removeItem("evaluatorId")
+      }
+    }
+  }, [evaluatorId, isLoaded])
+
+  useEffect(() => {
+    if (isLoaded) localStorage.setItem("acceptanceCompleted", acceptanceCompleted.toString())
+  }, [acceptanceCompleted, isLoaded])
+
+  useEffect(() => {
+    if (isLoaded) localStorage.setItem("processCompleted", processCompleted.toString())
+  }, [processCompleted, isLoaded])
+>>>>>>> Stashed changes
   const router = useRouter()
 
   const tabs = [
@@ -63,10 +104,10 @@ export default function Home() {
           </p>
         </div>
         <div className="absolute right-4 top-1/2 -translate-y-1/2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => router.push("/login")}            
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push("/login")}
             className="bg-transparent border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground flex items-center gap-2 transition-colors"
           >
             <LogIn className="w-4 h-4" />
@@ -82,19 +123,25 @@ export default function Home() {
             {tabs.map((tab) => {
               const Icon = tab.icon
               let isLocked = false
+<<<<<<< Updated upstream
               if (tab.id === "info" && evaluatorId !== null) isLocked = true
               if (tab.id === "acceptance" && (evaluatorId === null || acceptanceCompleted)) isLocked = true
               if (tab.id === "descriptive" && !acceptanceCompleted) isLocked = true
               
+=======
+              if (tab.id === "info" && evaluatorId !== null && !processCompleted) isLocked = true
+              if (tab.id === "acceptance" && (evaluatorId === null || acceptanceCompleted || processCompleted)) isLocked = true
+              if (tab.id === "descriptive" && (!acceptanceCompleted || processCompleted)) isLocked = true
+
+>>>>>>> Stashed changes
               return (
                 <Button
                   key={tab.id}
                   variant={activeTab === tab.id ? "default" : "ghost"}
                   onClick={() => handleTabClick(tab.id)}
                   disabled={isLocked && activeTab !== tab.id}
-                  className={`flex items-center gap-2 whitespace-nowrap ${
-                    activeTab === tab.id ? "" : "text-muted-foreground"
-                  }`}
+                  className={`flex items-center gap-2 whitespace-nowrap ${activeTab === tab.id ? "" : "text-muted-foreground"
+                    }`}
                 >
                   <Icon className="w-4 h-4" />
                   <span className="hidden sm:inline">{tab.label}</span>
@@ -111,16 +158,27 @@ export default function Home() {
         <div className="w-full max-w-6xl">
           {activeTab === "info" && (
             <div className="flex justify-center">
+<<<<<<< Updated upstream
               <ProductHero onComplete={(id) => {
                 setEvaluatorId(id);
                 setActiveTab("acceptance");
               }} />
+=======
+              <ProductHero
+                isReadOnly={processCompleted}
+                onComplete={(id) => {
+                  setEvaluatorId(id);
+                  setActiveTab("acceptance");
+                }}
+                onReset={handleReset}
+              />
+>>>>>>> Stashed changes
             </div>
           )}
           {activeTab === "acceptance" && (
             <div className="max-w-3xl mx-auto">
-              <AcceptanceTest 
-                evaluatorId={evaluatorId!} 
+              <AcceptanceTest
+                evaluatorId={evaluatorId!}
                 onComplete={() => {
                   setAcceptanceCompleted(true);
                   setActiveTab("descriptive");
@@ -130,7 +188,17 @@ export default function Home() {
           )}
           {activeTab === "descriptive" && (
             <div className="max-w-3xl mx-auto">
+<<<<<<< Updated upstream
               <DescriptiveTest evaluatorId={evaluatorId!} />
+=======
+              <DescriptiveTest
+                evaluatorId={evaluatorId!}
+                onComplete={() => {
+                  setProcessCompleted(true);
+                  setActiveTab("info");
+                }}
+              />
+>>>>>>> Stashed changes
             </div>
           )}
         </div>
