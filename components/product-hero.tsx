@@ -68,8 +68,8 @@ export function ProductHero({ onComplete, onReset, isReadOnly }: ProductHeroProp
     }
 
     const edadNum = Number(evaluatorData.edad)
-    if (!Number.isInteger(edadNum) || edadNum <= 0) {
-      alert("Por favor, ingrese una edad válida (número entero mayor a 0).")
+    if (!Number.isInteger(edadNum) || edadNum <= 0 || edadNum > 100) {
+      alert("Por favor, ingrese una edad válida (número entero entre 1 y 100).")
       return
     }
 
@@ -195,11 +195,12 @@ export function ProductHero({ onComplete, onReset, isReadOnly }: ProductHeroProp
                       id="edad"
                       type="number"
                       min="1"
+                      max="100"
                       step="1"
                       value={evaluatorData.edad}
                       onChange={(e) => setEvaluatorData({ ...evaluatorData, edad: e.target.value })}
                       placeholder="Ej: 25"
-                      className={`bg-transparent border-0 border-b rounded-none px-0 text-2xl font-semibold focus-visible:ring-0 placeholder:text-muted-foreground/40 h-12 ${hasAttemptedSubmit && (!evaluatorData.edad || Number(evaluatorData.edad) <= 0 || !Number.isInteger(Number(evaluatorData.edad))) ? "border-red-500 focus-visible:border-red-500" : "border-primary/20 focus-visible:border-primary"}`}
+                      className={`bg-transparent border-0 border-b rounded-none px-0 text-2xl font-semibold focus-visible:ring-0 placeholder:text-muted-foreground/40 h-12 ${hasAttemptedSubmit && (!evaluatorData.edad || Number(evaluatorData.edad) <= 0 || Number(evaluatorData.edad) > 100 || !Number.isInteger(Number(evaluatorData.edad))) ? "border-red-500 focus-visible:border-red-500" : "border-primary/20 focus-visible:border-primary"}`}
                     />
                   </div>
 
