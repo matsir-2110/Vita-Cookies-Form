@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { ProductHero } from "@/components/product-hero"
 import { AcceptanceTest } from "@/components/acceptance-test"
@@ -14,8 +14,6 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<TabType>("info")
   const [evaluatorId, setEvaluatorId] = useState<string | null>(null)
   const [acceptanceCompleted, setAcceptanceCompleted] = useState(false)
-<<<<<<< Updated upstream
-=======
   const [processCompleted, setProcessCompleted] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
 
@@ -54,7 +52,7 @@ export default function Home() {
   useEffect(() => {
     if (isLoaded) localStorage.setItem("processCompleted", processCompleted.toString())
   }, [processCompleted, isLoaded])
->>>>>>> Stashed changes
+
   const router = useRouter()
 
   const tabs = [
@@ -63,8 +61,19 @@ export default function Home() {
     { id: "descriptive" as const, label: "Prueba Descriptiva", icon: FileText },
   ]
 
+  const handleReset = () => {
+    setActiveTab("info")
+    setEvaluatorId(null)
+    setAcceptanceCompleted(false)
+    setProcessCompleted(false)
+  }
+
   const handleTabClick = (tabId: TabType) => {
-    if (tabId === "info" && evaluatorId) {
+    if (processCompleted && tabId !== "info") {
+      alert("Ya has completado todas las pruebas. ¡Gracias por participar!")
+      return
+    }
+    if (tabId === "info" && evaluatorId && !processCompleted) {
       alert("La información ya fue guardada. Por favor, continúe con las pruebas.")
       return
     }
@@ -123,25 +132,17 @@ export default function Home() {
             {tabs.map((tab) => {
               const Icon = tab.icon
               let isLocked = false
-<<<<<<< Updated upstream
-              if (tab.id === "info" && evaluatorId !== null) isLocked = true
-              if (tab.id === "acceptance" && (evaluatorId === null || acceptanceCompleted)) isLocked = true
-              if (tab.id === "descriptive" && !acceptanceCompleted) isLocked = true
-              
-=======
               if (tab.id === "info" && evaluatorId !== null && !processCompleted) isLocked = true
               if (tab.id === "acceptance" && (evaluatorId === null || acceptanceCompleted || processCompleted)) isLocked = true
               if (tab.id === "descriptive" && (!acceptanceCompleted || processCompleted)) isLocked = true
 
->>>>>>> Stashed changes
               return (
                 <Button
                   key={tab.id}
                   variant={activeTab === tab.id ? "default" : "ghost"}
                   onClick={() => handleTabClick(tab.id)}
                   disabled={isLocked && activeTab !== tab.id}
-                  className={`flex items-center gap-2 whitespace-nowrap ${activeTab === tab.id ? "" : "text-muted-foreground"
-                    }`}
+                  className={`flex items-center gap-2 whitespace-nowrap ${activeTab === tab.id ? "" : "text-muted-foreground"}`}
                 >
                   <Icon className="w-4 h-4" />
                   <span className="hidden sm:inline">{tab.label}</span>
@@ -158,12 +159,6 @@ export default function Home() {
         <div className="w-full max-w-6xl">
           {activeTab === "info" && (
             <div className="flex justify-center">
-<<<<<<< Updated upstream
-              <ProductHero onComplete={(id) => {
-                setEvaluatorId(id);
-                setActiveTab("acceptance");
-              }} />
-=======
               <ProductHero
                 isReadOnly={processCompleted}
                 onComplete={(id) => {
@@ -172,7 +167,6 @@ export default function Home() {
                 }}
                 onReset={handleReset}
               />
->>>>>>> Stashed changes
             </div>
           )}
           {activeTab === "acceptance" && (
@@ -188,9 +182,6 @@ export default function Home() {
           )}
           {activeTab === "descriptive" && (
             <div className="max-w-3xl mx-auto">
-<<<<<<< Updated upstream
-              <DescriptiveTest evaluatorId={evaluatorId!} />
-=======
               <DescriptiveTest
                 evaluatorId={evaluatorId!}
                 onComplete={() => {
@@ -198,7 +189,6 @@ export default function Home() {
                   setActiveTab("info");
                 }}
               />
->>>>>>> Stashed changes
             </div>
           )}
         </div>
@@ -217,7 +207,7 @@ export default function Home() {
               Evaluación Sensorial de Galletitas de Avena, Lentejas, Vegetales y Chocolate
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-               Univ. de la Cuenca del Plata · Lic. en Nutrición - ISI
+              Univ. de la Cuenca del Plata · Lic. en Nutrición - ISI
             </p>
           </div>
         </div>
