@@ -41,7 +41,7 @@ export function AcceptanceCharts({ compact = false }: AcceptanceChartsProps) {
         const { data: evaluators } = await supabase.from('evaluators').select('id, edad, consume_snacks, created_at')
         const { data: acceptance } = await supabase.from('acceptance_tests').select('satisfaccion, created_at')
 
-        // 1. Hedonic Data (-2 to 2)
+        
         const hedonicCounts = {
           "2": 0, "1": 0, "0": 0, "-1": 0, "-2": 0
         }
@@ -59,7 +59,7 @@ export function AcceptanceCharts({ compact = false }: AcceptanceChartsProps) {
           { name: "Me gusta mucho", value: hedonicCounts["2"], fill: "#6B8E6B" },
         ]
 
-        // 2. Consume Snacks (replacing Purchase Intent since it's free text)
+        
         let snacksYes = 0
         let snacksNo = 0
         evaluators?.forEach(e => {
@@ -71,7 +71,7 @@ export function AcceptanceCharts({ compact = false }: AcceptanceChartsProps) {
           { name: "No consume", value: snacksNo, fill: PIE_COLORS[1] },
         ]
 
-        // 3. Timeline Data (by date)
+        
         const dateMap: Record<string, { totalScore: number; count: number }> = {}
         acceptance?.forEach(a => {
           if (a.created_at) {
@@ -160,7 +160,7 @@ export function AcceptanceCharts({ compact = false }: AcceptanceChartsProps) {
       <h2 className="text-xl font-semibold text-foreground">Análisis de Prueba de Aceptabilidad</h2>
       
       <div className="grid md:grid-cols-2 gap-6">
-        {/* Escala Hedónica */}
+        
         <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle className="text-foreground">Escala Hedónica</CardTitle>
@@ -190,7 +190,7 @@ export function AcceptanceCharts({ compact = false }: AcceptanceChartsProps) {
           </CardContent>
         </Card>
 
-        {/* Consumo Snacks */}
+        
         <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle className="text-foreground">Hábitos de Consumo</CardTitle>
@@ -228,7 +228,7 @@ export function AcceptanceCharts({ compact = false }: AcceptanceChartsProps) {
           </CardContent>
         </Card>
 
-        {/* Evolución Temporal */}
+        
         <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle className="text-foreground">Evolución Temporal</CardTitle>
@@ -272,7 +272,7 @@ export function AcceptanceCharts({ compact = false }: AcceptanceChartsProps) {
           </CardContent>
         </Card>
 
-        {/* Distribución por Edad */}
+        
         <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle className="text-foreground">Distribución por Edad</CardTitle>

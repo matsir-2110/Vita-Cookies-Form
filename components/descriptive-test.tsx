@@ -74,7 +74,7 @@ export function DescriptiveTest({ evaluatorId, onComplete }: { evaluatorId: stri
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Basic validation
+    
     if (!formData.color || !formData.aroma || !formData.sabor || !formData.textura) {
       alert("Por favor, califique todos los atributos antes de enviar.")
       return
@@ -127,7 +127,7 @@ export function DescriptiveTest({ evaluatorId, onComplete }: { evaluatorId: stri
       >
         <div className="relative px-8 md:px-12 pt-10 md:pt-12 pb-2 md:pb-2">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 md:gap-12">
-            {/* Izquierda: eyebrow + título */}
+            
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-4">
                 <span
@@ -151,7 +151,7 @@ export function DescriptiveTest({ evaluatorId, onComplete }: { evaluatorId: stri
       <CardContent className="p-6 pt-0">
         <form onSubmit={handleSubmit} className="space-y-8">
 
-          {/* Instrucciones para el evaluador */}
+          
           <section className="pt-0 pb-8 md:pb-10 ">
             <h3
               className="flex items-center justify-center gap-6 text-lg font-semibold mb-10 before:content-[''] before:flex-1 before:h-[1px] before:bg-gradient-to-r before:from-transparent before:to-[#1f2a3d] after:content-[''] after:flex-1 after:h-[1px] after:bg-gradient-to-l after:from-transparent after:to-[#1f2a3d]"
@@ -190,7 +190,7 @@ export function DescriptiveTest({ evaluatorId, onComplete }: { evaluatorId: stri
             </div>
           </section>
 
-          {/* Atributos */}
+          
           <div className="space-y-8">
             {attributes.map((attribute) => (
               <section key={attribute.id} className="space-y-4">
@@ -199,7 +199,7 @@ export function DescriptiveTest({ evaluatorId, onComplete }: { evaluatorId: stri
                   <p className="text-sm text-muted-foreground mt-1">{attribute.description}</p>
                 </div>
 
-                {/* Escala visual */}
+                
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs text-muted-foreground px-1">
                     {attribute.scale.map((label, idx) => (
@@ -235,7 +235,7 @@ export function DescriptiveTest({ evaluatorId, onComplete }: { evaluatorId: stri
             ))}
           </div>
 
-          {/* Comentarios */}
+          
           <section>
             <h3 className="text-base font-semibold text-foreground mb-2">
               Comentarios opcionales y sugerencias técnicas

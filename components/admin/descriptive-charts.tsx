@@ -159,7 +159,7 @@ export function DescriptiveCharts({ compact = false }: DescriptiveChartsProps) {
     <div className="space-y-6">
       <h2 className="text-xl font-semibold text-foreground">Análisis de Prueba Descriptiva</h2>
       
-      {/* Radar Chart - Perfil General */}
+      
       <Card className="bg-card border-border">
         <CardHeader>
           <CardTitle className="text-foreground">Perfil Sensorial General</CardTitle>
@@ -207,9 +207,9 @@ export function DescriptiveCharts({ compact = false }: DescriptiveChartsProps) {
         </CardContent>
       </Card>
 
-      {/* Detailed Attribute Charts */}
+      
       <div className="grid md:grid-cols-2 gap-6">
-        {/* Color */}
+        
         <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle className="text-foreground">Color</CardTitle>
@@ -239,7 +239,7 @@ export function DescriptiveCharts({ compact = false }: DescriptiveChartsProps) {
           </CardContent>
         </Card>
 
-        {/* Aroma */}
+        
         <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle className="text-foreground">Aroma</CardTitle>
@@ -269,7 +269,7 @@ export function DescriptiveCharts({ compact = false }: DescriptiveChartsProps) {
           </CardContent>
         </Card>
 
-        {/* Sabor */}
+        
         <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle className="text-foreground">Sabor</CardTitle>
@@ -299,7 +299,7 @@ export function DescriptiveCharts({ compact = false }: DescriptiveChartsProps) {
           </CardContent>
         </Card>
 
-        {/* Textura */}
+        
         <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle className="text-foreground">Textura</CardTitle>

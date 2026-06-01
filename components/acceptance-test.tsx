@@ -17,7 +17,7 @@ const satisfactionLevels = [
   { label: "Me disgusta mucho", value: "-2" },
 ]
 
-// Sage & Cream
+
 const C = {
   bg: "#f5f0e8",
   surface: "#dce5d4",
@@ -78,15 +78,8 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
     e.preventDefault()
     setHasAttemptedSubmit(true)
 
-    // Basic validation
-    const consumoDiarioValido = formData.consumoDiario === "Otro"
-      ? formData.consumoDiarioOtro.trim() !== ""
-      : formData.consumoDiario !== ""
-    const preferenciaValida = formData.preferenciaUltraprocesado === "Otro"
-      ? formData.preferenciaOtro.trim() !== ""
-      : formData.preferenciaUltraprocesado !== ""
-
-    if (!formData.satisfaccion || !consumoDiarioValido || !preferenciaValida) {
+    
+    if (!formData.satisfaccion || !formData.consumoDiario.trim() || !formData.preferenciaUltraprocesado.trim()) {
       alert("Por favor, complete todos los campos obligatorios (marcados en rojo).")
       return
     }
@@ -139,7 +132,7 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
       >
         <div className="relative px-8 md:px-12 pt-10 md:pt-12 pb-4 md:pb-4">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 md:gap-12">
-            {/* Izquierda: eyebrow + título */}
+            
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-4">
                 <span
@@ -165,7 +158,7 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
       <CardContent className="p-6 pt-0">
         <form onSubmit={handleSubmit} className="space-y-8">
 
-          {/* Sección II: Guía de Evaluación */}
+          
           <section className="pt-0 pb-8 md:pb-10">
             <h3
               className="flex items-center justify-center gap-6 text-lg font-semibold mb-10 before:content-[''] before:flex-1 before:h-[1px] before:bg-gradient-to-r before:from-transparent before:to-[#1f2a3d] after:content-[''] after:flex-1 after:h-[1px] after:bg-gradient-to-l after:from-transparent after:to-[#1f2a3d]"
@@ -205,7 +198,7 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
           </section>
 
 
-          {/* Sección III: Escala Hedónica */}
+          
           <section>
             <h3 className="text-lg font-semibold text-foreground mb-4 pb-2 border-b border-primary/30">
               I. Escala Hedónica de Aceptación
@@ -237,7 +230,7 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
             </RadioGroup>
           </section>
 
-          {/* Sección IV: Observaciones */}
+          
           <section>
             <h3 className="text-lg font-semibold text-foreground mb-4 pb-2 border-b border-primary/30">
               II. Observaciones y Sugerencias
