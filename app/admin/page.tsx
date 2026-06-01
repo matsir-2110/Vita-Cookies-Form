@@ -64,9 +64,9 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-background flex">
-      {/* Sidebar */}
+      
       <aside className="w-72 bg-card border-r border-border flex flex-col fixed h-full">
-        {/* Logo/Brand */}
+        
         <div className="p-6 border-b border-border">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 flex items-center justify-cente">
@@ -79,7 +79,7 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Navigation */}
+        
         <nav className="flex-1 p-4 space-y-2">
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 px-3">
             Navegación
@@ -100,14 +100,14 @@ export default function AdminPage() {
                   }
                 `}
               >
-                {/* Active indicator bar */}
+                
                 <div className={`
                   absolute left-0 top-1/2 -translate-y-1/2 w-1 rounded-full
                   transition-all duration-300
                   ${isActive ? "h-8 bg-primary-foreground" : "h-0 bg-primary"}
                 `} />
                 
-                {/* Icon container */}
+                
                 <div className={`
                   w-9 h-9 rounded-lg flex items-center justify-center
                   transition-all duration-300
@@ -119,7 +119,7 @@ export default function AdminPage() {
                   <Icon className={`w-4 h-4 transition-transform duration-300 ${isActive ? "" : "group-hover:scale-110"}`} />
                 </div>
                 
-                {/* Text */}
+                
                 <div className="flex-1 text-left">
                   <p className={`text-sm font-medium ${isActive ? "" : "group-hover:text-primary"}`}>
                     {tab.label}
@@ -129,7 +129,7 @@ export default function AdminPage() {
                   </p>
                 </div>
 
-                {/* Arrow */}
+                
                 <ChevronRight className={`
                   w-4 h-4 transition-all duration-300
                   ${isActive 
@@ -142,7 +142,7 @@ export default function AdminPage() {
           })}
         </nav>
 
-        {/* Quick Actions */}
+        
         <div className="p-4 border-t border-border space-y-2">
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 px-3">
             Acciones
@@ -167,7 +167,7 @@ export default function AdminPage() {
           </button>
         </div>
 
-        {/* Back button */}
+        
         <div className="p-4 border-t border-border">
           <Link href="/" className="block">
             <button className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl
@@ -182,9 +182,9 @@ export default function AdminPage() {
         </div>
       </aside>
 
-      {/* Main Content */}
+      
       <main className="flex-1 ml-72">
-        {/* Top bar */}
+        
         <header className="bg-card/80 backdrop-blur-sm border-b border-border sticky top-0 z-10 px-8 py-4">
           <div className="flex items-center justify-between">
             <div>
@@ -212,7 +212,7 @@ export default function AdminPage() {
           </div>
         </header>
 
-        {/* Content */}
+        
         <div className="p-8">
           {activeTab === "overview" && (
             <div className="space-y-8">
@@ -229,7 +229,7 @@ export default function AdminPage() {
           {activeTab === "comments" && <CommentsSection />}
         </div>
 
-        {/* Footer */}
+        
         <footer className="border-t border-border py-6 px-8 mt-8">
           <div className="flex items-center justify-between text-sm text-muted-foreground">
             <p>Panel Administrativo - Evaluación Sensorial de Galletitas Vegetales</p>
