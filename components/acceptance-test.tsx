@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Droplet, Cookie, Sparkles } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 const satisfactionLevels = [
   { label: "Me gusta mucho", value: "2" },
@@ -51,7 +52,9 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
   const [formData, setFormData] = useState({
     satisfaccion: "",
     consumoDiario: "",
+    consumoDiarioOtro: "",
     preferenciaUltraprocesado: "",
+    preferenciaOtro: "",
     sugerencias: "",
   })
 
@@ -90,8 +93,8 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
           {
             evaluator_id: evaluatorId,
             satisfaccion: parseInt(formData.satisfaccion),
-            consumo_diario: formData.consumoDiario || null,
-            preferencia_ultraprocesado: formData.preferenciaUltraprocesado || null,
+            consumo_diario: formData.consumoDiario === "Otro" ? formData.consumoDiarioOtro : formData.consumoDiario || null,
+            preferencia_ultraprocesado: formData.preferenciaUltraprocesado === "Otro" ? formData.preferenciaOtro : formData.preferenciaUltraprocesado || null,
             sugerencias: formData.sugerencias || null,
           }
         ])
@@ -103,7 +106,9 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
       setFormData({
         satisfaccion: "",
         consumoDiario: "",
+        consumoDiarioOtro: "",
         preferenciaUltraprocesado: "",
+        preferenciaOtro: "",
         sugerencias: "",
       })
       setHasAttemptedSubmit(false)
@@ -233,29 +238,57 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="consumo-diario" className={hasAttemptedSubmit && !formData.consumoDiario.trim() ? "text-red-500" : ""}>
+                <Label className={hasAttemptedSubmit && !formData.consumoDiario ? "text-red-500" : ""}>
                   ¿Diariamente consumiría el producto? *
                 </Label>
-                <Textarea
-                  id="consumo-diario"
+                <Select
                   value={formData.consumoDiario}
-                  onChange={(e) => setFormData({ ...formData, consumoDiario: e.target.value })}
-                  placeholder="Escriba su respuesta..."
-                  className={`bg-card min-h-[60px] ${hasAttemptedSubmit && !formData.consumoDiario.trim() ? "border-red-500 ring-1 ring-red-500" : ""}`}
-                />
+                  onValueChange={(value) => setFormData({ ...formData, consumoDiario: value, consumoDiarioOtro: "" })}
+                >
+                  <SelectTrigger className={`bg-card ${hasAttemptedSubmit && !formData.consumoDiario ? "border-red-500 ring-1 ring-red-500" : ""}`}>
+                    <SelectValue placeholder="Seleccione una opción..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Sí">Sí</SelectItem>
+                    <SelectItem value="No">No</SelectItem>
+                    <SelectItem value="Otro">Otro</SelectItem>
+                  </SelectContent>
+                </Select>
+                {formData.consumoDiario === "Otro" && (
+                  <Textarea
+                    value={formData.consumoDiarioOtro}
+                    onChange={(e) => setFormData({ ...formData, consumoDiarioOtro: e.target.value })}
+                    placeholder="Escriba su respuesta..."
+                    className={`bg-card min-h-[60px] mt-2 ${hasAttemptedSubmit && !formData.consumoDiarioOtro.trim() ? "border-red-500 ring-1 ring-red-500" : ""}`}
+                  />
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="preferencia" className={hasAttemptedSubmit && !formData.preferenciaUltraprocesado.trim() ? "text-red-500" : ""}>
+                <Label className={hasAttemptedSubmit && !formData.preferenciaUltraprocesado ? "text-red-500" : ""}>
                   ¿Elegiría consumir este producto antes de un ultra procesado? *
                 </Label>
-                <Textarea
-                  id="preferencia"
+                <Select
                   value={formData.preferenciaUltraprocesado}
-                  onChange={(e) => setFormData({ ...formData, preferenciaUltraprocesado: e.target.value })}
-                  placeholder="Escriba su respuesta..."
-                  className={`bg-card min-h-[60px] ${hasAttemptedSubmit && !formData.preferenciaUltraprocesado.trim() ? "border-red-500 ring-1 ring-red-500" : ""}`}
-                />
+                  onValueChange={(value) => setFormData({ ...formData, preferenciaUltraprocesado: value, preferenciaOtro: "" })}
+                >
+                  <SelectTrigger className={`bg-card ${hasAttemptedSubmit && !formData.preferenciaUltraprocesado ? "border-red-500 ring-1 ring-red-500" : ""}`}>
+                    <SelectValue placeholder="Seleccione una opción..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Sí">Sí</SelectItem>
+                    <SelectItem value="No">No</SelectItem>
+                    <SelectItem value="Otro">Otro</SelectItem>
+                  </SelectContent>
+                </Select>
+                {formData.preferenciaUltraprocesado === "Otro" && (
+                  <Textarea
+                    value={formData.preferenciaOtro}
+                    onChange={(e) => setFormData({ ...formData, preferenciaOtro: e.target.value })}
+                    placeholder="Escriba su respuesta..."
+                    className={`bg-card min-h-[60px] mt-2 ${hasAttemptedSubmit && !formData.preferenciaOtro.trim() ? "border-red-500 ring-1 ring-red-500" : ""}`}
+                  />
+                )}
               </div>
 
               <div className="space-y-2">

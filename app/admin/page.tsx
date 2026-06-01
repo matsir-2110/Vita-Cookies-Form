@@ -148,15 +148,6 @@ export default function AdminPage() {
             Acciones
           </p>
           <button
-            onClick={handleRefresh}
-            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm
-              bg-accent/50 hover:bg-accent text-foreground
-              transition-all duration-200 hover:shadow-md group"
-          >
-            <RefreshCw className={`w-4 h-4 transition-transform group-hover:rotate-180 duration-500 ${isRefreshing ? "animate-spin" : ""}`} />
-            <span>Actualizar datos</span>
-          </button>
-          <button
             onClick={handleExport}
             className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm
               bg-accent/50 hover:bg-accent text-foreground
@@ -233,7 +224,6 @@ export default function AdminPage() {
         <footer className="border-t border-border py-6 px-8 mt-8">
           <div className="flex items-center justify-between text-sm text-muted-foreground">
             <p>Panel Administrativo - Evaluación Sensorial de Galletitas Vegetales</p>
-            <p>Facultad de Ciencias de la Salud y Bienestar</p>
           </div>
         </footer>
       </main>
