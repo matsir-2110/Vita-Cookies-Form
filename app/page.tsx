@@ -101,7 +101,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen">
-      {/* Header */}
+      
       <header className="bg-primary text-primary-foreground py-4 px-4 shadow-md relative">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-lg md:text-xl font-semibold text-center pr-10 md:pr-0">
@@ -124,7 +124,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Navigation Tabs */}
+      
       <nav className="bg-card border-b border-border sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4">
           <div className="flex gap-1 overflow-x-auto py-2 justify-center">
@@ -155,7 +155,7 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Content */}
+      
       <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col items-center">
         <div className="w-full max-w-6xl">
           {activeTab === "info" && (
@@ -195,7 +195,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Footer */}
+      
       <footer className="bg-primary/10 border-t border-border py-6 mt-8">
         <div className="max-w-4xl mx-auto px-4 flex flex-col items-center gap-3">
           <div className="text-center">

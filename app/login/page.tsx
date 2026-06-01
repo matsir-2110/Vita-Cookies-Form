@@ -38,7 +38,7 @@ export default function LoginPage() {
         return;
       }
 
-      // Login exitoso → redirigir al panel admin
+      
       router.push("/admin");
     } catch (err) {
       console.error("Fetch error:", err);
@@ -52,7 +52,7 @@ export default function LoginPage() {
       style={{ backgroundColor: "#f0ebe0" }}
       className="min-h-screen flex flex-col items-center justify-center px-4"
     >
-      {/* Logo */}
+      
       <div className="mb-8 flex items-center gap-2">
         <span
           className="text-2xl font-bold tracking-tight"
@@ -62,7 +62,7 @@ export default function LoginPage() {
         </span>
       </div>
 
-      {/* Card */}
+      
       <div
         className="w-full max-w-md rounded-2xl p-10"
         style={{
@@ -71,7 +71,7 @@ export default function LoginPage() {
           border: "1px solid #e8e2d8",
         }}
       >
-        {/* Encabezado */}
+        
         <div className="text-center mb-8">
           <p
             className="text-xs font-semibold tracking-[0.18em] uppercase mb-3"
@@ -94,9 +94,9 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Formulario */}
+        
         <div className="space-y-5">
-          {/* Usuario */}
+          
           <div>
             <label
               htmlFor="username"
@@ -128,7 +128,7 @@ export default function LoginPage() {
             />
           </div>
 
-          {/* Contraseña */}
+          
           <div>
             <label
               htmlFor="password"
@@ -160,14 +160,14 @@ export default function LoginPage() {
             />
           </div>
 
-          {/* Error */}
+          
           {error && (
             <p className="text-sm text-center" style={{ color: "#dc2626" }}>
               {error}
             </p>
           )}
 
-          {/* Botón */}
+          
           <button
             onClick={handleSubmit}
             disabled={loading}
@@ -191,7 +191,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Volver al inicio */}
+      
       <Link
         href="/"
         className="mt-8 text-sm transition-colors"
