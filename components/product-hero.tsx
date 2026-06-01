@@ -68,8 +68,8 @@ export function ProductHero({ onComplete, onReset, isReadOnly }: ProductHeroProp
     }
 
     const edadNum = Number(evaluatorData.edad)
-    if (!Number.isInteger(edadNum) || edadNum <= 0) {
-      alert("Por favor, ingrese una edad válida (número entero mayor a 0).")
+    if (!Number.isInteger(edadNum) || edadNum <= 0 || edadNum > 100) {
+      alert("Por favor, ingrese una edad válida (número entero entre 1 y 100).")
       return
     }
 
@@ -105,7 +105,7 @@ export function ProductHero({ onComplete, onReset, isReadOnly }: ProductHeroProp
   return (
     <section className="relative overflow-hidden py-8 px-4 md:py-12 space-y-16">
       <div className="mx-auto max-w-6xl">
-        {/* Header Section */}
+        
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight mb-4" style={{ fontFamily: "serif" }}>
             GALLETITAS DE LENTEJAS, MANZANA, ZANAHORIA Y CHIPS
@@ -115,10 +115,10 @@ export function ProductHero({ onComplete, onReset, isReadOnly }: ProductHeroProp
           </div>
         </div>
 
-        {/* Info & Image Section */}
+        
         <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-stretch justify-center mb-16 w-full">
 
-          {/* Text Box */}
+          
           <div className="w-full md:flex-1 flex flex-col justify-center bg-muted/50 p-8 md:p-10 rounded-2xl border border-primary/10 shadow-sm">
             <h2 className="text-4xl md:text-5xl font-bold text-foreground text-center mb-8 pb-6 border-b border-foreground/20">
               ¿En qué consiste?
@@ -140,7 +140,7 @@ export function ProductHero({ onComplete, onReset, isReadOnly }: ProductHeroProp
             </div>
           </div>
 
-          {/* Image Box */}
+          
           <div className="w-full md:flex-1 flex items-center justify-center">
             <Image
               src="/infografia.jpg"
@@ -153,16 +153,16 @@ export function ProductHero({ onComplete, onReset, isReadOnly }: ProductHeroProp
           </div>
         </div>
 
-        {/* Evaluator Info Section — Rediseñado */}
+        
         {!isReadOnly ? (
           <>
             <div className="relative bg-gradient-to-br from-card via-card to-primary/5 border border-primary/20 rounded-3xl p-8 md:p-10 shadow-xl overflow-hidden">
-              {/* Decorative blob */}
+              
               <div className="pointer-events-none absolute -top-16 -right-16 w-56 h-56 bg-primary/10 rounded-full blur-3xl" />
               <div className="pointer-events-none absolute -bottom-20 -left-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
 
               <div className="relative">
-                {/* Header */}
+                
                 <div className="flex items-start gap-4 mb-8">
                   <div className="flex-none w-12 h-12 rounded-2xl bg-primary/15 text-primary flex items-center justify-center shadow-sm">
                     <User className="w-6 h-6" />
@@ -183,7 +183,7 @@ export function ProductHero({ onComplete, onReset, isReadOnly }: ProductHeroProp
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Edad */}
+                  
                   <div className={`group relative bg-background/70 backdrop-blur-sm border rounded-2xl p-5 transition-all ${hasAttemptedSubmit && !evaluatorData.edad ? "border-red-500 shadow-sm shadow-red-500/20" : "border-primary/15 hover:border-primary/40 hover:shadow-md"}`}>
                     <div className="flex items-center gap-2 mb-3">
                       <Calendar className={`w-4 h-4 ${hasAttemptedSubmit && !evaluatorData.edad ? "text-red-500" : "text-primary"}`} />
@@ -195,15 +195,16 @@ export function ProductHero({ onComplete, onReset, isReadOnly }: ProductHeroProp
                       id="edad"
                       type="number"
                       min="1"
+                      max="100"
                       step="1"
                       value={evaluatorData.edad}
                       onChange={(e) => setEvaluatorData({ ...evaluatorData, edad: e.target.value })}
                       placeholder="Ej: 25"
-                      className={`bg-transparent border-0 border-b rounded-none px-0 text-2xl font-semibold focus-visible:ring-0 placeholder:text-muted-foreground/40 h-12 ${hasAttemptedSubmit && (!evaluatorData.edad || Number(evaluatorData.edad) <= 0 || !Number.isInteger(Number(evaluatorData.edad))) ? "border-red-500 focus-visible:border-red-500" : "border-primary/20 focus-visible:border-primary"}`}
+                      className={`bg-transparent border-0 border-b rounded-none px-0 text-2xl font-semibold focus-visible:ring-0 placeholder:text-muted-foreground/40 h-12 ${hasAttemptedSubmit && (!evaluatorData.edad || Number(evaluatorData.edad) <= 0 || Number(evaluatorData.edad) > 100 || !Number.isInteger(Number(evaluatorData.edad))) ? "border-red-500 focus-visible:border-red-500" : "border-primary/20 focus-visible:border-primary"}`}
                     />
                   </div>
 
-                  {/* Género */}
+                  
                   <div className={`group relative bg-background/70 backdrop-blur-sm border rounded-2xl p-5 transition-all ${hasAttemptedSubmit && !evaluatorData.genero ? "border-red-500 shadow-sm shadow-red-500/20" : "border-primary/15 hover:border-primary/40 hover:shadow-md"}`}>
                     <div className="flex items-center gap-2 mb-3">
                       <Users className={`w-4 h-4 ${hasAttemptedSubmit && !evaluatorData.genero ? "text-red-500" : "text-primary"}`} />
@@ -241,7 +242,7 @@ export function ProductHero({ onComplete, onReset, isReadOnly }: ProductHeroProp
                     </RadioGroup>
                   </div>
 
-                  {/* Snacks saludables */}
+                  
                   <div className={`group relative bg-background/70 backdrop-blur-sm border rounded-2xl p-5 transition-all ${hasAttemptedSubmit && !evaluatorData.consumeSnacks ? "border-red-500 shadow-sm shadow-red-500/20" : "border-primary/15 hover:border-primary/40 hover:shadow-md"}`}>
                     <div className="flex items-center gap-2 mb-3">
                       <Apple className={`w-4 h-4 ${hasAttemptedSubmit && !evaluatorData.consumeSnacks ? "text-red-500" : "text-primary"}`} />

@@ -29,8 +29,8 @@ export function StatsOverview() {
         let dailyConsumeCount = 0
         if (acceptanceData && acceptanceData.length > 0) {
           const totalSatisfaccion = acceptanceData.reduce((acc, curr) => acc + curr.satisfaccion, 0)
-          // satisfaction is -2 to 2. Let's map it to 1 to 5 for the average display, or keep -2 to 2?
-          // If we map: -2->1, -1->2, 0->3, 1->4, 2->5 => + 3
+          
+          
           const mappedSatisfaccion = acceptanceData.reduce((acc, curr) => acc + (curr.satisfaccion + 3), 0)
           avgAcc = mappedSatisfaccion / acceptanceData.length
 
