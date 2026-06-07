@@ -7,9 +7,9 @@ import { DescriptiveCharts } from "@/components/admin/descriptive-charts"
 import { CommentsSection } from "@/components/admin/comments-section"
 import { RecentEvaluations } from "@/components/admin/recent-evaluations"
 import { Button } from "@/components/ui/button"
-import { 
-  BarChart3, 
-  MessageSquare, 
+import {
+  BarChart3,
+  MessageSquare,
   TrendingUp,
   Download,
   RefreshCw,
@@ -19,35 +19,37 @@ import {
   ChevronRight
 } from "lucide-react"
 import Link from "next/link"
+import { supabase } from "@/lib/supabase"
 
 type AdminTab = "overview" | "acceptance" | "descriptive" | "comments"
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<AdminTab>("overview")
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [isExporting, setIsExporting] = useState(false)
 
   const tabs = [
-    { 
-      id: "overview" as const, 
-      label: "Resumen General", 
+    {
+      id: "overview" as const,
+      label: "Resumen General",
       icon: TrendingUp,
       description: "Vista general de métricas"
     },
-    { 
-      id: "acceptance" as const, 
-      label: "Aceptabilidad", 
+    {
+      id: "acceptance" as const,
+      label: "Aceptabilidad",
       icon: PieChart,
       description: "Análisis hedónico"
     },
-    { 
-      id: "descriptive" as const, 
-      label: "Descriptivo", 
+    {
+      id: "descriptive" as const,
+      label: "Descriptivo",
       icon: BarChart3,
       description: "Perfil sensorial"
     },
-    { 
-      id: "comments" as const, 
-      label: "Comentarios", 
+    {
+      id: "comments" as const,
+      label: "Comentarios",
       icon: MessageSquare,
       description: "Feedback de evaluadores"
     },
@@ -58,19 +60,92 @@ export default function AdminPage() {
     setTimeout(() => setIsRefreshing(false), 1000)
   }
 
-  const handleExport = () => {
-    alert("Exportando datos a CSV...")
+  const handleExport = async () => {
+    setIsExporting(true)
+    try {
+      const [evalsResponse, accResponse, descResponse] = await Promise.all([
+        supabase.from('evaluators').select('*').order('created_at', { ascending: true }),
+        supabase.from('acceptance_tests').select('*'),
+        supabase.from('descriptive_tests').select('*')
+      ])
+
+      const evaluators = evalsResponse.data || []
+      const acceptanceTests = accResponse.data || []
+      const descriptiveTests = descResponse.data || []
+
+      const accMap = new Map(acceptanceTests.map(a => [a.evaluator_id, a]))
+      const descMap = new Map(descriptiveTests.map(d => [d.evaluator_id, d]))
+
+      const headers = [
+        "Evaluador ID",
+        "Fecha",
+        "Hora",
+        "Edad",
+        "Género",
+        "Consume Snacks",
+        "Satisfacción (Aceptabilidad)",
+        "Consumo Diario (Aceptabilidad)",
+        "Preferencia Ultraprocesado (Aceptabilidad)",
+        "Sugerencias (Aceptabilidad)",
+        "Color (Descriptivo)",
+        "Aroma (Descriptivo)",
+        "Sabor (Descriptivo)",
+        "Textura (Descriptivo)",
+        "Comentarios (Descriptivo)"
+      ]
+
+      const rows = evaluators.map((ev, index) => {
+        const acc = accMap.get(ev.id) || {}
+        const desc = descMap.get(ev.id) || {}
+        const dateObj = new Date(ev.created_at)
+
+        return [
+          `Ev. Nº ${index + 1}`,
+          dateObj.toLocaleDateString(),
+          dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          ev.edad,
+          ev.genero,
+          ev.consume_snacks,
+          acc.satisfaccion ?? "",
+          acc.consumo_diario ?? "",
+          acc.preferencia_ultraprocesado ?? "",
+          (acc.sugerencias || "").replace(/(\r\n|\n|\r)/gm, " "),
+          desc.color ?? "",
+          desc.aroma ?? "",
+          desc.sabor ?? "",
+          desc.textura ?? "",
+          (desc.comentarios || "").replace(/(\r\n|\n|\r)/gm, " ")
+        ].map(val => `"${String(val).replace(/"/g, '""')}"`).join(';')
+      })
+
+      const csvContent = [headers.join(';'), ...rows].join('\n')
+
+      const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' })
+      const link = document.createElement("a")
+      const url = URL.createObjectURL(blob)
+      link.setAttribute("href", url)
+      link.setAttribute("download", `resultados_evaluacion_${new Date().toISOString().split('T')[0]}.csv`)
+      link.style.visibility = 'hidden'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    } catch (error) {
+      console.error("Error al exportar:", error)
+      alert("Hubo un error al exportar los datos.")
+    } finally {
+      setIsExporting(false)
+    }
   }
 
   return (
     <div className="min-h-screen bg-background flex">
-      {/* Sidebar */}
+      { }
       <aside className="w-72 bg-card border-r border-border flex flex-col fixed h-full">
         {/* Logo/Brand */}
         <div className="p-6 border-b border-border">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 flex items-center justify-cente">
-              <img src="/logo-vita2.png"/>
+              <img src="/logo-vita2.png" />
             </div>
             <div>
               <h1 className="font-bold text-foreground">Panel Admin</h1>
@@ -79,7 +154,7 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Navigation */}
+        { }
         <nav className="flex-1 p-4 space-y-2">
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 px-3">
             Navegación
@@ -94,8 +169,8 @@ export default function AdminPage() {
                 className={`
                   w-full group relative flex items-center gap-3 px-4 py-3 rounded-xl
                   transition-all duration-300 ease-out
-                  ${isActive 
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30 scale-[1.02]" 
+                  ${isActive
+                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30 scale-[1.02]"
                     : "hover:bg-secondary text-foreground hover:scale-[1.01]"
                   }
                 `}
@@ -106,19 +181,19 @@ export default function AdminPage() {
                   transition-all duration-300
                   ${isActive ? "h-8 bg-primary-foreground" : "h-0 bg-primary"}
                 `} />
-                
+
                 {/* Icon container */}
                 <div className={`
                   w-9 h-9 rounded-lg flex items-center justify-center
                   transition-all duration-300
-                  ${isActive 
-                    ? "bg-primary-foreground/20" 
+                  ${isActive
+                    ? "bg-primary-foreground/20"
                     : "bg-secondary group-hover:bg-primary/10"
                   }
                 `}>
                   <Icon className={`w-4 h-4 transition-transform duration-300 ${isActive ? "" : "group-hover:scale-110"}`} />
                 </div>
-                
+
                 {/* Text */}
                 <div className="flex-1 text-left">
                   <p className={`text-sm font-medium ${isActive ? "" : "group-hover:text-primary"}`}>
@@ -132,8 +207,8 @@ export default function AdminPage() {
                 {/* Arrow */}
                 <ChevronRight className={`
                   w-4 h-4 transition-all duration-300
-                  ${isActive 
-                    ? "opacity-100 translate-x-0" 
+                  ${isActive
+                    ? "opacity-100 translate-x-0"
                     : "opacity-0 -translate-x-2 group-hover:opacity-50 group-hover:translate-x-0"
                   }
                 `} />
@@ -148,22 +223,14 @@ export default function AdminPage() {
             Acciones
           </p>
           <button
-            onClick={handleRefresh}
-            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm
-              bg-accent/50 hover:bg-accent text-foreground
-              transition-all duration-200 hover:shadow-md group"
-          >
-            <RefreshCw className={`w-4 h-4 transition-transform group-hover:rotate-180 duration-500 ${isRefreshing ? "animate-spin" : ""}`} />
-            <span>Actualizar datos</span>
-          </button>
-          <button
             onClick={handleExport}
+            disabled={isExporting}
             className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm
               bg-accent/50 hover:bg-accent text-foreground
-              transition-all duration-200 hover:shadow-md group"
+              transition-all duration-200 hover:shadow-md group disabled:opacity-50"
           >
-            <Download className="w-4 h-4 transition-transform group-hover:translate-y-0.5 duration-200" />
-            <span>Exportar CSV</span>
+            <Download className={`w-4 h-4 transition-transform duration-200 ${isExporting ? "animate-bounce" : "group-hover:translate-y-0.5"}`} />
+            <span>{isExporting ? "Exportando..." : "Exportar CSV"}</span>
           </button>
         </div>
 
@@ -199,7 +266,7 @@ export default function AdminPage() {
               <div className="text-right">
                 <p className="text-sm font-medium text-foreground">Última actualización</p>
                 <p className="text-xs text-muted-foreground">
-                  {new Date().toLocaleString("es-AR", { 
+                  {new Date().toLocaleString("es-AR", {
                     day: "numeric",
                     month: "short",
                     hour: "2-digit",
@@ -233,7 +300,6 @@ export default function AdminPage() {
         <footer className="border-t border-border py-6 px-8 mt-8">
           <div className="flex items-center justify-between text-sm text-muted-foreground">
             <p>Panel Administrativo - Evaluación Sensorial de Galletitas Vegetales</p>
-            <p>Facultad de Ciencias de la Salud y Bienestar</p>
           </div>
         </footer>
       </main>

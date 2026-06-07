@@ -196,7 +196,7 @@ export function CommentsSection() {
         </TooltipProvider>
       </div>
 
-      {/* Stats Cards */}
+      
       <div className="grid grid-cols-3 gap-4">
         <Card className="bg-primary/10 border-primary/20 shadow-none">
           <CardContent className="pt-4">
@@ -233,7 +233,7 @@ export function CommentsSection() {
         </Card>
       </div>
 
-      {/* Filters */}
+      
       <Card className="bg-card border-border">
         <CardHeader>
           <CardTitle className="text-foreground flex items-center gap-2">
@@ -279,7 +279,7 @@ export function CommentsSection() {
         </CardContent>
       </Card>
 
-      {/* Comments List */}
+      
       <Card className="bg-card border-border">
         <CardHeader>
           <CardTitle className="text-foreground flex items-center gap-2">

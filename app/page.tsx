@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { ProductHero } from "@/components/product-hero"
 import { AcceptanceTest } from "@/components/acceptance-test"
@@ -14,6 +14,45 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<TabType>("info")
   const [evaluatorId, setEvaluatorId] = useState<string | null>(null)
   const [acceptanceCompleted, setAcceptanceCompleted] = useState(false)
+  const [processCompleted, setProcessCompleted] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  useEffect(() => {
+    const savedTab = localStorage.getItem("activeTab") as TabType | null
+    const savedEvaluatorId = localStorage.getItem("evaluatorId")
+    const savedAcceptanceCompleted = localStorage.getItem("acceptanceCompleted")
+    const savedProcessCompleted = localStorage.getItem("processCompleted")
+
+    if (savedTab) setActiveTab(savedTab)
+    if (savedEvaluatorId) setEvaluatorId(savedEvaluatorId)
+    if (savedAcceptanceCompleted === "true") setAcceptanceCompleted(true)
+    if (savedProcessCompleted === "true") setProcessCompleted(true)
+
+    setIsLoaded(true)
+  }, [])
+
+  useEffect(() => {
+    if (isLoaded) localStorage.setItem("activeTab", activeTab)
+  }, [activeTab, isLoaded])
+
+  useEffect(() => {
+    if (isLoaded) {
+      if (evaluatorId) {
+        localStorage.setItem("evaluatorId", evaluatorId)
+      } else {
+        localStorage.removeItem("evaluatorId")
+      }
+    }
+  }, [evaluatorId, isLoaded])
+
+  useEffect(() => {
+    if (isLoaded) localStorage.setItem("acceptanceCompleted", acceptanceCompleted.toString())
+  }, [acceptanceCompleted, isLoaded])
+
+  useEffect(() => {
+    if (isLoaded) localStorage.setItem("processCompleted", processCompleted.toString())
+  }, [processCompleted, isLoaded])
+
   const router = useRouter()
 
   const tabs = [
@@ -22,8 +61,19 @@ export default function Home() {
     { id: "descriptive" as const, label: "Prueba Descriptiva", icon: FileText },
   ]
 
+  const handleReset = () => {
+    setActiveTab("info")
+    setEvaluatorId(null)
+    setAcceptanceCompleted(false)
+    setProcessCompleted(false)
+  }
+
   const handleTabClick = (tabId: TabType) => {
-    if (tabId === "info" && evaluatorId) {
+    if (processCompleted && tabId !== "info") {
+      alert("Ya has completado todas las pruebas. ¡Gracias por participar!")
+      return
+    }
+    if (tabId === "info" && evaluatorId && !processCompleted) {
       alert("La información ya fue guardada. Por favor, continúe con las pruebas.")
       return
     }
@@ -63,10 +113,10 @@ export default function Home() {
           </p>
         </div>
         <div className="absolute right-4 top-1/2 -translate-y-1/2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => router.push("/login")}            
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push("/login")}
             className="bg-transparent border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground flex items-center gap-2 transition-colors"
           >
             <LogIn className="w-4 h-4" />
@@ -75,26 +125,24 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Navigation Tabs */}
+      { }
       <nav className="bg-card border-b border-border sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4">
           <div className="flex gap-1 overflow-x-auto py-2 justify-center">
             {tabs.map((tab) => {
               const Icon = tab.icon
               let isLocked = false
-              if (tab.id === "info" && evaluatorId !== null) isLocked = true
-              if (tab.id === "acceptance" && (evaluatorId === null || acceptanceCompleted)) isLocked = true
-              if (tab.id === "descriptive" && !acceptanceCompleted) isLocked = true
-              
+              if (tab.id === "info" && evaluatorId !== null && !processCompleted) isLocked = true
+              if (tab.id === "acceptance" && (evaluatorId === null || acceptanceCompleted || processCompleted)) isLocked = true
+              if (tab.id === "descriptive" && (!acceptanceCompleted || processCompleted)) isLocked = true
+
               return (
                 <Button
                   key={tab.id}
                   variant={activeTab === tab.id ? "default" : "ghost"}
                   onClick={() => handleTabClick(tab.id)}
                   disabled={isLocked && activeTab !== tab.id}
-                  className={`flex items-center gap-2 whitespace-nowrap ${
-                    activeTab === tab.id ? "" : "text-muted-foreground"
-                  }`}
+                  className={`flex items-center gap-2 whitespace-nowrap ${activeTab === tab.id ? "" : "text-muted-foreground"}`}
                 >
                   <Icon className="w-4 h-4" />
                   <span className="hidden sm:inline">{tab.label}</span>
@@ -111,16 +159,20 @@ export default function Home() {
         <div className="w-full max-w-6xl">
           {activeTab === "info" && (
             <div className="flex justify-center">
-              <ProductHero onComplete={(id) => {
-                setEvaluatorId(id);
-                setActiveTab("acceptance");
-              }} />
+              <ProductHero
+                isReadOnly={processCompleted}
+                onComplete={(id) => {
+                  setEvaluatorId(id);
+                  setActiveTab("acceptance");
+                }}
+                onReset={handleReset}
+              />
             </div>
           )}
           {activeTab === "acceptance" && (
             <div className="max-w-3xl mx-auto">
-              <AcceptanceTest 
-                evaluatorId={evaluatorId!} 
+              <AcceptanceTest
+                evaluatorId={evaluatorId!}
                 onComplete={() => {
                   setAcceptanceCompleted(true);
                   setActiveTab("descriptive");
@@ -130,7 +182,13 @@ export default function Home() {
           )}
           {activeTab === "descriptive" && (
             <div className="max-w-3xl mx-auto">
-              <DescriptiveTest evaluatorId={evaluatorId!} />
+              <DescriptiveTest
+                evaluatorId={evaluatorId!}
+                onComplete={() => {
+                  setProcessCompleted(true);
+                  setActiveTab("info");
+                }}
+              />
             </div>
           )}
         </div>
@@ -149,7 +207,7 @@ export default function Home() {
               Evaluación Sensorial de Galletitas de Avena, Lentejas, Vegetales y Chocolate
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-               Univ. de la Cuenca del Plata · Lic. en Nutrición - ISI
+              Univ. de la Cuenca del Plata · Lic. en Nutrición - ISI
             </p>
           </div>
         </div>
