@@ -7,22 +7,19 @@ test.describe('Prueba de Aceptabilidad', () => {
 
     // 2. Llenar el formulario de Información del Evaluador para llegar a la Prueba de Aceptabilidad
     await page.getByLabel(/Edad/i).fill('25');
-    await page.locator('label').filter({ hasText: /^M$/ }).click();
-    await page.locator('label').filter({ hasText: /^Sí$/ }).click();
-    
-    // Ignorar cualquier alerta
-    page.on('dialog', dialog => dialog.accept());
+    await page.locator('button[role="radio"][value="M"]').click({ force: true });
+    await page.locator('button[role="radio"][value="si"]').click({ force: true });
     
     await page.getByRole('button', { name: /Guardar datos y continuar/i }).click();
 
     // 3. Esperar a que la pestaña de Aceptabilidad se active
-    const acceptanceTab = page.getByRole('button', { name: /Prueba de Aceptabilidad/i });
+    const acceptanceTab = page.locator('nav').getByRole('button', { name: /Prueba de Aceptabilidad/i });
     await expect(acceptanceTab).not.toBeDisabled({ timeout: 10000 });
   });
 
   test('debe requerir los campos obligatorios de aceptabilidad', async ({ page }) => {
     let alertMessage = '';
-    page.on('dialog', dialog => {
+    page.once('dialog', dialog => {
       alertMessage = dialog.message();
       dialog.accept();
     });
@@ -34,16 +31,20 @@ test.describe('Prueba de Aceptabilidad', () => {
     expect(alertMessage).toContain('complete todos los campos obligatorios');
     
     // Validar que no avanzó a la Prueba Descriptiva
-    const descriptiveTab = page.getByRole('button', { name: /Prueba Descriptiva/i });
+    const descriptiveTab = page.locator('nav').getByRole('button', { name: /Prueba Descriptiva/i });
     await expect(descriptiveTab).toBeDisabled();
   });
 
   test('debe permitir completar y avanzar a la Prueba Descriptiva', async ({ page }) => {
-    // Manejar el diálogo de éxito
-    page.on('dialog', dialog => dialog.accept());
+    // Manejar el diálogo de éxito que lanza la Prueba de Aceptabilidad, fallar si es un error
+    page.once('dialog', dialog => {
+      console.error('DIALOG MESSAGE:', dialog.message());
+      expect(dialog.message()).toContain('Gracias por completar');
+      dialog.accept();
+    });
 
     // 1. Escala Hedónica (Satisfacción)
-    await page.locator('label').filter({ hasText: /^Me gusta mucho$/ }).click();
+    await page.locator('button[role="radio"][value="2"]').click({ force: true }); // "Me gusta mucho" es el valor "2"
 
     // 2. Consumo Diario (Select de Radix UI)
     await page.locator('button[role="combobox"]').nth(0).click();
@@ -57,7 +58,7 @@ test.describe('Prueba de Aceptabilidad', () => {
     await page.getByRole('button', { name: /Enviar Prueba de Aceptabilidad/i }).click();
 
     // Validar que se desbloqueó la pestaña Descriptiva
-    const descriptiveTab = page.getByRole('button', { name: /Prueba Descriptiva/i });
+    const descriptiveTab = page.locator('nav').getByRole('button', { name: /Prueba Descriptiva/i });
     await expect(descriptiveTab).not.toBeDisabled({ timeout: 10000 });
   });
 });

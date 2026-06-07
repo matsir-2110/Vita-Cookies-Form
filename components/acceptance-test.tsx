@@ -113,9 +113,9 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
       })
       setHasAttemptedSubmit(false)
       onComplete?.()
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error al guardar:", error)
-      alert("Hubo un error al guardar los datos. Por favor, intente de nuevo.")
+      alert(`Hubo un error al guardar los datos: ${error?.message || "Desconocido"}. Por favor, intente de nuevo.`)
     } finally {
       setIsSubmitting(false)
     }
