@@ -17,7 +17,7 @@ test.describe('Información del Evaluador', () => {
 
     // Validar que se mostró la alerta y que no se avanzó
     expect(alertMessage).toContain('Por favor, complete todos los campos');
-    const acceptanceTab = page.getByRole('button', { name: /Prueba de Aceptabilidad/i });
+    const acceptanceTab = page.locator('nav').getByRole('button', { name: /Prueba de Aceptabilidad/i });
     await expect(acceptanceTab).toBeDisabled();
   });
 
@@ -25,20 +25,23 @@ test.describe('Información del Evaluador', () => {
     // Llenar edad
     await page.getByLabel(/Edad/i).fill('28');
 
-    // Seleccionar género (buscamos el label exacto 'M', 'F' u 'Otro')
-    await page.locator('label').filter({ hasText: /^M$/ }).click();
+    // Seleccionar género (hacemos clic directo en el botón de Radix UI)
+    await page.locator('button[role="radio"][value="M"]').click({ force: true });
 
-    // Seleccionar si consume snacks ('Sí' o 'No')
-    await page.locator('label').filter({ hasText: /^Sí$/ }).click();
+    // Seleccionar si consume snacks ('sí')
+    await page.locator('button[role="radio"][value="si"]').click({ force: true });
 
-    // Manejar cualquier alerta inesperada (aunque no debería haber si todo está bien)
-    page.on('dialog', dialog => dialog.accept());
+    // Manejar cualquier alerta inesperada (si hay un error de base de datos, lo queremos ver)
+    page.on('dialog', dialog => {
+      console.error('ALERTA INESPERADA:', dialog.message());
+      dialog.accept();
+    });
 
     // Enviar formulario
     await page.getByRole('button', { name: /Guardar datos y continuar/i }).click();
 
     // Validar que la pestaña de Aceptabilidad se haya desbloqueado
-    const acceptanceTab = page.getByRole('button', { name: /Prueba de Aceptabilidad/i });
+    const acceptanceTab = page.locator('nav').getByRole('button', { name: /Prueba de Aceptabilidad/i });
     
     // Playwright esperará hasta que el botón ya no esté deshabilitado 
     // (esto cubre el tiempo que tarda Supabase en responder)
