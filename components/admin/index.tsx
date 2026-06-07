@@ -30,7 +30,7 @@ export function AdminPanel() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#f5f0e8" }}>
 
-      {/* Header */}
+      
       <header style={{ backgroundColor: "#2f3d2a" }} className="sticky top-0 z-10 shadow-md">
         <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -50,7 +50,7 @@ export function AdminPanel() {
         </div>
       </header>
 
-      {/* Tab navigation */}
+      
       <nav className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex gap-1 overflow-x-auto">
@@ -76,7 +76,7 @@ export function AdminPanel() {
         </div>
       </nav>
 
-      {/* Content */}
+      
       <main className="max-w-7xl mx-auto px-6 py-8">
         {activeTab === "dashboard" && (
           <div className="space-y-8">

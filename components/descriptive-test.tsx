@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -40,8 +40,9 @@ const attributes = [
   },
 ]
 
-export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
+export function DescriptiveTest({ evaluatorId, onComplete }: { evaluatorId: string, onComplete?: () => void }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
   const [formData, setFormData] = useState({
     color: "",
     aroma: "",
@@ -50,14 +51,30 @@ export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
     comentarios: "",
   })
 
+  useEffect(() => {
+    const saved = localStorage.getItem("descriptiveTestData")
+    if (saved) {
+      try {
+        setFormData(JSON.parse(saved))
+      } catch (e) {
+        console.error("Error loading saved data", e)
+      }
+    }
+    setIsLoaded(true)
+  }, [])
+
+  useEffect(() => {
+    if (isLoaded) localStorage.setItem("descriptiveTestData", JSON.stringify(formData))
+  }, [formData, isLoaded])
+
   const handleAttributeChange = (attributeId: string, value: string) => {
     setFormData((prev) => ({ ...prev, [attributeId]: value }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
     
-    // Basic validation
     if (!formData.color || !formData.aroma || !formData.sabor || !formData.textura) {
       alert("Por favor, califique todos los atributos antes de enviar.")
       return
@@ -82,14 +99,15 @@ export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
       if (error) throw error
 
       alert("¡Gracias por completar la prueba descriptiva!")
+      localStorage.removeItem("descriptiveTestData")
       setFormData({
-        juezNumero: "",
         color: "",
         aroma: "",
         sabor: "",
         textura: "",
         comentarios: "",
       })
+      onComplete?.()
     } catch (error: any) {
       console.error("Error al guardar:", error)
       alert(`Hubo un error al guardar los datos: ${error?.message || "Error desconocido"}. Por favor, intente de nuevo.`)
@@ -109,7 +127,7 @@ export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
       >
         <div className="relative px-8 md:px-12 pt-10 md:pt-12 pb-2 md:pb-2">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 md:gap-12">
-            {/* Izquierda: eyebrow + título */}
+            
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-4">
                 <span
@@ -133,8 +151,8 @@ export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
       <CardContent className="p-6 pt-0">
         <form onSubmit={handleSubmit} className="space-y-8">
 
-          {/* Instrucciones para el evaluador */}
-          <section className="pt-0 pb-8 md:pb-10">
+          
+          <section className="pt-0 pb-8 md:pb-10 ">
             <h3
               className="flex items-center justify-center gap-6 text-lg font-semibold mb-10 before:content-[''] before:flex-1 before:h-[1px] before:bg-gradient-to-r before:from-transparent before:to-[#1f2a3d] after:content-[''] after:flex-1 after:h-[1px] after:bg-gradient-to-l after:from-transparent after:to-[#1f2a3d]"
               style={{ color: "#1f2a3d" }}
@@ -142,12 +160,12 @@ export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
               Instrucciones
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 md:divide-x divide-gray-200">
+            <div className="grid grid-cols-1 md:grid-cols-3 md:divide-x divide-gray-200 gap-y-8 md:gap-y-0">
               {[
                 { n: 1, key: "Observar", text: "Analice cada atributo sensorial de la muestra con atención y sin apuro." },
                 { n: 2, key: "Percibir", text: "Identifique la intensidad percibida de color, aroma, sabor y textura." },
                 { n: 3, key: "Calificar", text: "Marque en la escala de 1 a 5 el valor que mejor represente su percepción." },
-              ].map((s) => (
+              ].map((s, i, arr) => (
                 <div key={s.n} className="flex flex-col items-center text-center px-4 md:px-8">
                   <span
                     className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold mb-4"
@@ -164,12 +182,15 @@ export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
                   <p className="text-sm leading-relaxed" style={{ color: "#5a6b7d" }}>
                     {s.text}
                   </p>
+                  {i < arr.length - 1 && (
+                    <div className="md:hidden mt-6 w-12 h-px" style={{ backgroundColor: "#d4cfc2" }} />
+                  )}
                 </div>
               ))}
             </div>
           </section>
 
-          {/* Atributos */}
+          
           <div className="space-y-8">
             {attributes.map((attribute) => (
               <section key={attribute.id} className="space-y-4">
@@ -178,7 +199,7 @@ export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
                   <p className="text-sm text-muted-foreground mt-1">{attribute.description}</p>
                 </div>
 
-                {/* Escala visual */}
+                
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs text-muted-foreground px-1">
                     {attribute.scale.map((label, idx) => (
@@ -194,11 +215,10 @@ export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
                         key={value}
                         type="button"
                         onClick={() => handleAttributeChange(attribute.id, value.toString())}
-                        className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-sm md:text-base font-semibold transition-all ${
-                          formData[attribute.id as keyof typeof formData] === value.toString()
-                            ? "bg-primary text-primary-foreground scale-110 shadow-lg"
-                            : "bg-card text-foreground hover:bg-primary/20 border-2 border-border"
-                        }`}
+                        className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-sm md:text-base font-semibold transition-all ${formData[attribute.id as keyof typeof formData] === value.toString()
+                          ? "bg-primary text-primary-foreground scale-110 shadow-lg"
+                          : "bg-card text-foreground hover:bg-primary/20 border-2 border-border"
+                          }`}
                         aria-label={`Valor ${value} para ${attribute.title}`}
                       >
                         {value}
@@ -215,7 +235,7 @@ export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
             ))}
           </div>
 
-          {/* Comentarios */}
+          
           <section>
             <h3 className="text-base font-semibold text-foreground mb-2">
               Comentarios opcionales y sugerencias técnicas
@@ -228,7 +248,7 @@ export function DescriptiveTest({ evaluatorId }: { evaluatorId: string }) {
               onChange={(e) => setFormData({ ...formData, comentarios: e.target.value })}
               placeholder="Escriba sus comentarios técnicos..."
               className="bg-card min-h-[100px]"
-            />  
+            />
           </section>
 
           <Button type="submit" className="w-full py-6 text-lg font-semibold" disabled={isSubmitting}>
