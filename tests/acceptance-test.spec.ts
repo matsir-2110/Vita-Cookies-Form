@@ -7,8 +7,8 @@ test.describe('Prueba de Aceptabilidad', () => {
 
     // 2. Llenar el formulario de Información del Evaluador para llegar a la Prueba de Aceptabilidad
     await page.getByLabel(/Edad/i).fill('25');
-    await page.locator('button[role="radio"][value="M"]').click({ force: true });
-    await page.locator('button[role="radio"][value="si"]').click({ force: true });
+    await page.locator('label[for="hero-genero-m"]').click();
+    await page.locator('label[for="hero-snacks-si"]').click();
     
     await page.getByRole('button', { name: /Guardar datos y continuar/i }).click();
 
@@ -44,7 +44,7 @@ test.describe('Prueba de Aceptabilidad', () => {
     });
 
     // 1. Escala Hedónica (Satisfacción)
-    await page.locator('button[role="radio"][value="2"]').click({ force: true }); // "Me gusta mucho" es el valor "2"
+    await page.locator('label[for="satisfaction-2"]').click(); // "Me gusta mucho" es el valor "2"
 
     // 2. Consumo Diario (Select de Radix UI)
     await page.locator('button[role="combobox"]').nth(0).click();

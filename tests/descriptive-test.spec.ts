@@ -6,8 +6,8 @@ test.describe('Prueba Descriptiva y Fin del Flujo', () => {
 
     // 1. Completar Información del Evaluador
     await page.getByLabel(/Edad/i).fill('30');
-    await page.locator('button[role="radio"][value="O"]').click({ force: true });
-    await page.locator('button[role="radio"][value="si"]').click({ force: true });
+    await page.locator('label[for="hero-genero-o"]').click();
+    await page.locator('label[for="hero-snacks-si"]').click();
     
     await page.getByRole('button', { name: /Guardar datos y continuar/i }).click();
 
@@ -23,7 +23,7 @@ test.describe('Prueba Descriptiva y Fin del Flujo', () => {
     });
     
     // 2. Completar Prueba de Aceptabilidad
-    await page.locator('button[role="radio"][value="1"]').click({ force: true }); // "Me gusta"
+    await page.locator('label[for="satisfaction-1"]').click(); // "Me gusta"
     await page.locator('button[role="combobox"]').nth(0).click();
     await page.getByRole('option', { name: 'Sí', exact: true }).click();
     await page.locator('button[role="combobox"]').nth(1).click();
