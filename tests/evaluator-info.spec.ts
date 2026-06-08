@@ -25,11 +25,11 @@ test.describe('Información del Evaluador', () => {
     // Llenar edad
     await page.getByLabel(/Edad/i).fill('28');
 
-    // Seleccionar género (hacemos clic directo en el botón de Radix UI)
-    await page.locator('button[role="radio"][value="M"]').click({ force: true });
+    // Seleccionar género
+    await page.locator('label[for="hero-genero-m"]').click();
 
     // Seleccionar si consume snacks ('sí')
-    await page.locator('button[role="radio"][value="si"]').click({ force: true });
+    await page.locator('label[for="hero-snacks-si"]').click();
 
     // Manejar cualquier alerta inesperada (si hay un error de base de datos, lo queremos ver)
     page.on('dialog', dialog => {

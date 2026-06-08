@@ -108,7 +108,7 @@ export default function AdminPage() {
           ev.consume_snacks,
           acc.satisfaccion ?? "",
           acc.consumo_diario ?? "",
-          acc.preferencia_ultraprocesado ?? "",
+          acc.preferencia_ultrapocesado ?? "",
           (acc.sugerencias || "").replace(/(\r\n|\n|\r)/gm, " "),
           desc.color ?? "",
           desc.aroma ?? "",
