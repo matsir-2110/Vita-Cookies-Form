@@ -1,4 +1,4 @@
-"use client"
+º"use client"
 
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -14,8 +14,6 @@ import {
   Pie,
   Cell,
   Legend,
-  LineChart,
-  Line,
 } from "recharts"
 import { supabase } from "@/lib/supabase"
 
@@ -31,7 +29,6 @@ export function AcceptanceCharts({ compact = false }: AcceptanceChartsProps) {
   const [data, setData] = useState({
     hedonicData: [] as any[],
     snacksData: [] as any[],
-    timelineData: [] as any[],
     ageGroupData: [] as any[],
   })
 
@@ -41,7 +38,7 @@ export function AcceptanceCharts({ compact = false }: AcceptanceChartsProps) {
         const { data: evaluators } = await supabase.from('evaluators').select('id, edad, consume_snacks, created_at')
         const { data: acceptance } = await supabase.from('acceptance_tests').select('satisfaccion, created_at')
 
-        
+        // 1. Hedonic Data (-2 to 2)
         const hedonicCounts = {
           "2": 0, "1": 0, "0": 0, "-1": 0, "-2": 0
         }
@@ -59,7 +56,7 @@ export function AcceptanceCharts({ compact = false }: AcceptanceChartsProps) {
           { name: "Me gusta mucho", value: hedonicCounts["2"], fill: "#6B8E6B" },
         ]
 
-        
+        // 2. Consume Snacks (replacing Purchase Intent since it's free text)
         let snacksYes = 0
         let snacksNo = 0
         evaluators?.forEach(e => {
@@ -70,24 +67,6 @@ export function AcceptanceCharts({ compact = false }: AcceptanceChartsProps) {
           { name: "Sí consume snacks saludables", value: snacksYes, fill: PIE_COLORS[0] },
           { name: "No consume", value: snacksNo, fill: PIE_COLORS[1] },
         ]
-
-        
-        const dateMap: Record<string, { totalScore: number; count: number }> = {}
-        acceptance?.forEach(a => {
-          if (a.created_at) {
-            const dateObj = new Date(a.created_at)
-            const dateStr = `${dateObj.getDate()}/${dateObj.getMonth() + 1}`
-            if (!dateMap[dateStr]) dateMap[dateStr] = { totalScore: 0, count: 0 }
-            // Map score -2..2 to 1..5
-            dateMap[dateStr].totalScore += (a.satisfaccion + 3)
-            dateMap[dateStr].count++
-          }
-        })
-        const timelineData = Object.keys(dateMap).map(date => ({
-          date,
-          evaluaciones: dateMap[date].count,
-          promedio: Number((dateMap[date].totalScore / dateMap[date].count).toFixed(1)),
-        }))
 
         // 4. Age Group Data
         const ageGroups = {
@@ -106,7 +85,7 @@ export function AcceptanceCharts({ compact = false }: AcceptanceChartsProps) {
           cantidad: ageGroups[k as keyof typeof ageGroups]
         }))
 
-        setData({ hedonicData, snacksData, timelineData, ageGroupData })
+        setData({ hedonicData, snacksData, ageGroupData })
       } catch (error) {
         console.error("Error fetching acceptance charts data:", error)
       } finally {
@@ -132,17 +111,17 @@ export function AcceptanceCharts({ compact = false }: AcceptanceChartsProps) {
             <BarChart data={data.hedonicData} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke="#D4CFC2" />
               <XAxis type="number" stroke="#5A7A5A" />
-              <YAxis 
-                dataKey="name" 
-                type="category" 
-                width={60} 
+              <YAxis
+                dataKey="name"
+                type="category"
+                width={60}
                 stroke="#5A7A5A"
                 tick={{ fontSize: 10 }}
                 tickFormatter={(value) => value.split(" ").slice(-1)[0]}
               />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: "#FEFCF7", 
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#FEFCF7",
                   border: "1px solid #D4CFC2",
                   borderRadius: "8px"
                 }}
@@ -158,9 +137,9 @@ export function AcceptanceCharts({ compact = false }: AcceptanceChartsProps) {
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold text-foreground">Análisis de Prueba de Aceptabilidad</h2>
-      
+
       <div className="grid md:grid-cols-2 gap-6">
-        
+        {/* Escala Hedónica */}
         <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle className="text-foreground">Escala Hedónica</CardTitle>
@@ -170,16 +149,16 @@ export function AcceptanceCharts({ compact = false }: AcceptanceChartsProps) {
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={data.hedonicData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#D4CFC2" />
-                <XAxis 
-                  dataKey="name" 
-                  stroke="#5A7A5A" 
+                <XAxis
+                  dataKey="name"
+                  stroke="#5A7A5A"
                   tick={{ fontSize: 10 }}
                   tickFormatter={(value) => value.split(" ").slice(-1)[0]}
                 />
                 <YAxis stroke="#5A7A5A" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: "#FEFCF7", 
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#FEFCF7",
                     border: "1px solid #D4CFC2",
                     borderRadius: "8px"
                   }}
@@ -190,7 +169,7 @@ export function AcceptanceCharts({ compact = false }: AcceptanceChartsProps) {
           </CardContent>
         </Card>
 
-        
+        {/* Consumo Snacks */}
         <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle className="text-foreground">Hábitos de Consumo</CardTitle>
@@ -212,14 +191,14 @@ export function AcceptanceCharts({ compact = false }: AcceptanceChartsProps) {
                     <Cell key={`cell-${index}`} fill={entry.fill} />
                   ))}
                 </Pie>
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: "#FEFCF7", 
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#FEFCF7",
                     border: "1px solid #D4CFC2",
                     borderRadius: "8px"
                   }}
                 />
-                <Legend 
+                <Legend
                   wrapperStyle={{ fontSize: "12px" }}
                   formatter={(value) => <span style={{ color: "#2D4A2D" }}>{value}</span>}
                 />
@@ -228,8 +207,7 @@ export function AcceptanceCharts({ compact = false }: AcceptanceChartsProps) {
           </CardContent>
         </Card>
 
-        
-        
+        {/* Distribución por Edad */}
         <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle className="text-foreground">Distribución por Edad</CardTitle>
@@ -241,9 +219,9 @@ export function AcceptanceCharts({ compact = false }: AcceptanceChartsProps) {
                 <CartesianGrid strokeDasharray="3 3" stroke="#D4CFC2" />
                 <XAxis dataKey="grupo" stroke="#5A7A5A" />
                 <YAxis stroke="#5A7A5A" allowDecimals={false} />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: "#FEFCF7", 
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#FEFCF7",
                     border: "1px solid #D4CFC2",
                     borderRadius: "8px"
                   }}

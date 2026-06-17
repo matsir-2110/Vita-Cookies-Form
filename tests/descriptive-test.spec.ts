@@ -15,13 +15,7 @@ test.describe('Prueba Descriptiva y Fin del Flujo', () => {
     const acceptanceTab = page.locator('nav').getByRole('button', { name: /Prueba de Aceptabilidad/i });
     await expect(acceptanceTab).not.toBeDisabled({ timeout: 10000 });
 
-    // Manejar el diálogo de éxito de Aceptabilidad antes de avanzar a Descriptiva
-    page.once('dialog', dialog => {
-      console.error('DIALOG MESSAGE ACEPTABILIDAD:', dialog.message());
-      expect(dialog.message()).toContain('Gracias por completar');
-      dialog.accept();
-    });
-    
+
     // 2. Completar Prueba de Aceptabilidad
     await page.locator('label[for="satisfaction-1"]').click(); // "Me gusta"
     await page.locator('button[role="combobox"]').nth(0).click();
@@ -36,15 +30,9 @@ test.describe('Prueba Descriptiva y Fin del Flujo', () => {
   });
 
   test('debe requerir todos los atributos obligatorios', async ({ page }) => {
-    let alertMessage = '';
-    page.once('dialog', dialog => {
-      alertMessage = dialog.message();
-      dialog.accept();
-    });
-
     await page.getByRole('button', { name: /Enviar Prueba Descriptiva/i }).click();
     
-    expect(alertMessage).toContain('califique todos los atributos');
+    await expect(page.getByText('califique todos los atributos')).toBeVisible();
   });
 
   test('debe completar el flujo y mostrar la pantalla final', async ({ page }) => {
@@ -54,14 +42,11 @@ test.describe('Prueba Descriptiva y Fin del Flujo', () => {
     await page.getByRole('button', { name: 'Valor 3 para III. Sinergia de Sabores (Sabor)' }).click();
     await page.getByRole('button', { name: 'Valor 5 para IV. Propiedades Reológicas (Textura)' }).click();
 
-    // Enviar Prueba Descriptiva y esperar el diálogo que aparece después de guardar en Supabase
-    const dialogPromise = page.waitForEvent('dialog');
+    // Enviar Prueba Descriptiva
     await page.getByRole('button', { name: /Enviar Prueba Descriptiva/i }).click();
-    const dialog = await dialogPromise;
     
-    // Validar el mensaje de éxito final
-    expect(dialog.message()).toContain('Gracias por completar la prueba descriptiva');
-    await dialog.accept();
+    // Validar que se muestra el toast de éxito
+    await expect(page.getByText('¡Gracias por completar la prueba descriptiva!')).toBeVisible();
 
     // Validar que se muestre la pantalla de agradecimiento
     await expect(page.getByText('¡Muchas gracias por participar!')).toBeVisible({ timeout: 10000 });
