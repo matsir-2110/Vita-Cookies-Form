@@ -1,7 +1,15 @@
 .env
 .env*.local
+.env.test
 
 # Common ignores
 node_modules
 .next/
 .DS_Store
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

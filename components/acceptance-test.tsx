@@ -91,10 +91,10 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
         .from('acceptance_tests')
         .insert([
           {
-            evaluator_id: evaluatorId,
+            evaluator: evaluatorId,
             satisfaccion: parseInt(formData.satisfaccion),
             consumo_diario: formData.consumoDiario === "Otro" ? formData.consumoDiarioOtro : formData.consumoDiario || null,
-            preferencia_ultraprocesado: formData.preferenciaUltraprocesado === "Otro" ? formData.preferenciaOtro : formData.preferenciaUltraprocesado || null,
+            preferencia_ultrapocesado: formData.preferenciaUltraprocesado === "Otro" ? formData.preferenciaOtro : formData.preferenciaUltraprocesado || null,
             sugerencias: formData.sugerencias || null,
           }
         ])
