@@ -2,6 +2,31 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Prueba Descriptiva y Fin del Flujo', () => {
   test.beforeEach(async ({ page }) => {
+
+    await page.route('**/rest/v1/descriptive_tests**', async (route) => {
+      await route.fulfill({
+        status: 201,
+        contentType: 'application/json',
+        body: JSON.stringify([{ id: 'mock-id' }]),
+      });
+    });
+
+    await page.route('**/rest/v1/acceptance_tests**', async (route) => {
+    await route.fulfill({
+      status: 201,
+      contentType: 'application/json',
+      body: JSON.stringify([{ id: 'mock-id' }]),
+    });
+  });
+
+    await page.route('**/rest/v1/evaluators**', async (route) => {
+      await route.fulfill({
+        status: 201,
+        contentType: 'application/json',
+        body: JSON.stringify([{ id: 'mock-evaluator-id' }]),
+      });
+    });
+    
     await page.goto('/');
 
     // 1. Completar Información del Evaluador
