@@ -7,13 +7,13 @@ export const responsesTable = pgTable("responses", {
   edad: integer("edad").notNull(),
   genero: text("genero").notNull(),
   acepta: text("acepta").notNull(),
-  valor: integer("valor").notNull(),       
-  color: integer("color").notNull(),       
-  olor: integer("olor").notNull(),         
-  sabor: integer("sabor").notNull(),       
-  textura: integer("textura").notNull(),   
-  consume: text("consume").notNull(),      
-  prefiere: text("prefiere"),              
+  valor: integer("valor").notNull(),       // escala -2 a 2
+  color: integer("color").notNull(),       // escala 1-5
+  olor: integer("olor").notNull(),         // escala 1-5
+  sabor: integer("sabor").notNull(),       // escala 1-5
+  textura: integer("textura").notNull(),   // escala 1-5
+  consume: text("consume").notNull(),      // "Sí" | "No"
+  prefiere: text("prefiere"),              // nullable
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

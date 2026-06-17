@@ -199,7 +199,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-4 flex justify-between items-end">
           <div className="text-right">
             <p className="text-xs text-muted-foreground">
-              Version 1.00
+              Version 1.1.0
             </p>
           </div>
           <div className="text-center flex-1">

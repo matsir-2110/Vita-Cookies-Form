@@ -229,49 +229,6 @@ export function AcceptanceCharts({ compact = false }: AcceptanceChartsProps) {
         </Card>
 
         
-        <Card className="bg-card border-border">
-          <CardHeader>
-            <CardTitle className="text-foreground">Evolución Temporal</CardTitle>
-            <CardDescription>Evaluaciones y promedio por día</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={data.timelineData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#D4CFC2" />
-                <XAxis dataKey="date" stroke="#5A7A5A" />
-                <YAxis yAxisId="left" stroke="#6B8E6B" allowDecimals={false} />
-                <YAxis yAxisId="right" orientation="right" stroke="#D4896B" domain={[0, 5]} />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: "#FEFCF7", 
-                    border: "1px solid #D4CFC2",
-                    borderRadius: "8px"
-                  }}
-                />
-                <Legend />
-                <Line 
-                  yAxisId="left"
-                  type="monotone" 
-                  dataKey="evaluaciones" 
-                  stroke="#6B8E6B" 
-                  strokeWidth={2}
-                  dot={{ fill: "#6B8E6B" }}
-                  name="Evaluaciones"
-                />
-                <Line 
-                  yAxisId="right"
-                  type="monotone" 
-                  dataKey="promedio" 
-                  stroke="#D4896B" 
-                  strokeWidth={2}
-                  dot={{ fill: "#D4896B" }}
-                  name="Promedio"
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
         
         <Card className="bg-card border-border">
           <CardHeader>
