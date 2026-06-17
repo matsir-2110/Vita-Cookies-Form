@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 
 import { supabase } from "@/lib/supabase"
+import { toast } from "sonner"
 
 const attributes = [
   {
@@ -76,7 +77,7 @@ export function DescriptiveTest({ evaluatorId, onComplete }: { evaluatorId: stri
 
     
     if (!formData.color || !formData.aroma || !formData.sabor || !formData.textura) {
-      alert("Por favor, califique todos los atributos antes de enviar.")
+      toast.warning("Campos incompletos", { description: "Por favor, califique todos los atributos antes de enviar." })
       return
     }
 
@@ -98,7 +99,7 @@ export function DescriptiveTest({ evaluatorId, onComplete }: { evaluatorId: stri
 
       if (error) throw error
 
-      alert("¡Gracias por completar la prueba descriptiva!")
+      toast.success("¡Prueba finalizada!", { description: "¡Gracias por completar la prueba descriptiva!" })
       localStorage.removeItem("descriptiveTestData")
       setFormData({
         color: "",
@@ -110,7 +111,7 @@ export function DescriptiveTest({ evaluatorId, onComplete }: { evaluatorId: stri
       onComplete?.()
     } catch (error: any) {
       console.error("Error al guardar:", error)
-      alert(`Hubo un error al guardar los datos: ${error?.message || "Error desconocido"}. Por favor, intente de nuevo.`)
+      toast.error("Error al guardar", { description: `Hubo un error: ${error?.message || "Error desconocido"}. Por favor, intente de nuevo.` })
     } finally {
       setIsSubmitting(false)
     }
