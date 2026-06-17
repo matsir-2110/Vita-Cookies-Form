@@ -101,7 +101,7 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
 
       if (error) throw error
 
-      alert("¡Gracias por completar la prueba de aceptabilidad!")
+
       localStorage.removeItem("acceptanceTestData")
       setFormData({
         satisfaccion: "",
@@ -113,9 +113,9 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
       })
       setHasAttemptedSubmit(false)
       onComplete?.()
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error al guardar:", error)
-      alert("Hubo un error al guardar los datos. Por favor, intente de nuevo.")
+      alert(`Hubo un error al guardar los datos: ${error?.message || "Desconocido"}. Por favor, intente de nuevo.`)
     } finally {
       setIsSubmitting(false)
     }
@@ -200,8 +200,8 @@ export function AcceptanceTest({ evaluatorId, onComplete }: { evaluatorId: strin
 
           
           <section>
-            <h3 className="text-lg font-semibold text-foreground mb-4 pb-2 border-b border-primary/30">
-              I. Escala Hedónica de Aceptación
+            <h3 className={`text-lg font-semibold mb-4 pb-2 border-b border-primary/30 ${hasAttemptedSubmit && !formData.satisfaccion ? "text-red-500" : "text-foreground"}`}>
+              I. Escala Hedónica de Aceptación *
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
               Seleccione solo una opción basada en su percepción sensorial inmediata.
